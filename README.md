@@ -1,53 +1,59 @@
-# NPOファンド構想
-> 祭り・文化財を、あなたの手で守る。
+# NPOファンド構想 🏮
 
-<div align="center">
-<img src="https://via.placeholder.com/800x400/07071a/22d3bb?text=Save+Culture+with+Your+Hands" alt="Project Banner" width="100%">
-</div>
-
-## 🤔 これは何？
-日本の祭りや文化財を「寄付」ではなく**「投資」**によって守る、新しいWebプラットフォームのプロトタイプです。
-
-少子高齢化で資金不足に悩む文化財に対して、AIによる透明な監査システムと、リターン（体験）を伴う投資モデルを導入することで、持続可能な資金循環を生み出すことを目指しています。
-
-## 🚀 デモを見る（推奨）
-
-ブラウザで以下のファイルを開いてください。
-
-### 1. [📱 アプリモックアップ (app_mockup.html)](./app_mockup.html)
-支援者が実際に使うスマートフォンアプリの体験デモです。
-- **見どころ**: 
-    - 課題を共有する「オンボーディング」
-    - 投資から修復完了までの「体験フロー」
-    - 自分の名前が刻まれる「デジタル芳名板」
-
-### 2. [🌐 ランディングページ (index.html)](./index.html)
-プロジェクトのビジョンと仕組みを解説するWebサイトです。
-- **見どころ**:
-    - 「3つの柱（透明性・市場・実態）」の解説
-    - 実装に向けたロードマップ
-
-### 3. [📊 ピッチ資料 (slides.html)](./slides.html)
-コンセプト全体を説明するプレゼンテーションスライドです。
-- キーボードの `←` `→` で操作できます。
+> **祭り・文化財を、あなたの手で守る。**
+>
+> 寄付ではなく「投資」で日本の文化を持続可能に支える、新しい公益プラットフォーム構想。
 
 ---
 
-## 📚 ドキュメント一覧
+## 🚀 Live Demo
 
-詳細な設計や理論背景を知りたい方はこちら。
+GitHub Pages で公開中です。
+
+| デモ | 説明 |
+|------|------|
+| **[📱 アプリモックアップ](https://akinori114514.github.io/NPOfund/app_mockup.html)** | 支援者向けスマホアプリの体験デモ |
+| **[🌐 ランディングページ](https://akinori114514.github.io/NPOfund/index.html)** | プロジェクトのビジョンと仕組み |
+| **[📊 ピッチスライド](https://akinori114514.github.io/NPOfund/slides.html)** | コンセプト説明用プレゼン（← → キーで操作） |
+
+---
+
+## 🤔 これは何？
+
+少子高齢化による**資金不足で消えゆく祭りや文化財**を、  
+**AI監査による透明性** × **市場原理によるリターン** で持続的に支援する仕組みです。
+
+```
+選ぶ → 投資する → 体験する
+   祭りを探す    1,000円〜     VIP席・直会参加
+```
+
+### 3つの柱
+
+| 柱 | 内容 |
+|----|------|
+| 🤖 **AI監査** | 資金の使い道を24時間チェック。透明性を保証 |
+| 📈 **市場原理** | 寄付ではなく投資。成果を出す活動に資金が集中 |
+| 🕵️ **現地調査** | プロの調査員が実態を確認。AIの盲点を補完 |
+
+---
+
+## 📚 ドキュメント
 
 | ファイル | 内容 |
 |----------|------|
-| **[01_concept_paper.md](./01_concept_paper.md)** | **全体の設計図**。なぜこの仕組みが必要なのか、どう動くのか。 |
-| **[02_ecosystem_and_scenarios.md](./02_ecosystem_and_scenarios.md)** | **ユースケース**。不正な宗教法人がどう排除されるか等の具体的シナリオ。 |
-| **[05_matsuri_case_study.md](./05_matsuri_case_study.md)** | **ケーススタディ**。具体的な「ある神社の復興」の物語。 |
-| [03_implementation_roadmap.md](./03_implementation_roadmap.md) | 実装計画と予算見積もり。 |
-| [04_theoretical_foundations.md](./04_theoretical_foundations.md) | 理論的背景（市場メカニズム、監査論）。 |
+| [01_concept_paper.md](./01_concept_paper.md) | 全体設計：背景・仕組み・リスク分析 |
+| [02_ecosystem_and_scenarios.md](./02_ecosystem_and_scenarios.md) | ユースケースと不正排除シナリオ |
+| [05_matsuri_case_study.md](./05_matsuri_case_study.md) | 祭り復興の具体的ケーススタディ |
+| [03_implementation_roadmap.md](./03_implementation_roadmap.md) | 段階的実装計画と予算 |
+| [04_theoretical_foundations.md](./04_theoretical_foundations.md) | 理論的背景（市場論・監査論） |
 
-## 🛠️ 技術スタック
-- **Frontend**: Vanilla HTML5, CSS3 (Glassmorphism Design), JavaScript
-- **No Build Tools Required**: ブラウザだけでそのまま動きます。
+## 🛠️ 技術
+
+- HTML5 / CSS3 / JavaScript（ビルドツール不要）
+- Glassmorphism Dark Theme
+- GitHub Pages でホスティング
 
 ---
+
 *Draft v0.2 — 2026.02*
