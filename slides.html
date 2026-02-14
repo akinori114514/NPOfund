@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NPOファンド構想 - Pitch Deck</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Inter:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        :root {
+            --bg: #07071a;
+            --surface: #14143a;
+            --card: rgba(30, 30, 90, 0.5);
+            --accent: #7c6cf0;
+            --accent2: #a89afe;
+            --teal: #22d3bb;
+            --teal2: #5eead4;
+            --text: #f0f0fa;
+            --dim: #9494c0;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            line-height: 1.6;
+            letter-spacing: 0.03em
+        }
+
+        /* Layout */
+        .deck {
+            position: relative;
+            width: 100%;
+            height: 100%
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 80px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .6s ease, transform .6s ease;
+            transform: translateY(30px)
+        }
+
+        .slide.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0)
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, var(--teal), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 32px;
+            color: var(--text);
+            text-align: center
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--teal);
+            margin-bottom: 8px
+        }
+
+        p,
+        .desc {
+            font-size: 1.1rem;
+            color: var(--dim);
+            max-width: 800px;
+            text-align: center
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--dim);
+            font-weight: 300;
+            text-align: center;
+            margin-bottom: 40px
+        }
+
+        /* Components */
+        .card {
+            background: var(--card);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 32px;
+            border: 1px solid var(--glass-border);
+            transition: .3s;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2)
+        }
+
+        .card:hover {
+            border-color: var(--teal);
+            transform: translateY(-4px)
+        }
+
+        .grid2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            width: 100%;
+            max-width: 1000px
+        }
+
+        .grid3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            width: 100%;
+            max-width: 1100px
+        }
+
+        /* Specifics */
+        .icon {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            display: block
+        }
+
+        .stat .num {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--teal), var(--accent2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent
+        }
+
+        .stat .label {
+            font-size: 0.9rem;
+            color: var(--dim);
+            font-weight: 700;
+            letter-spacing: 0.05em
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 100
+        }
+
+        .nav .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: .3s
+        }
+
+        .nav .dot.active {
+            background: var(--teal);
+            box-shadow: 0 0 10px var(--teal);
+            transform: scale(1.2)
+        }
+
+        .slide-number {
+            position: fixed;
+            bottom: 30px;
+            right: 40px;
+            font-size: 14px;
+            color: var(--dim);
+            font-family: 'Inter', sans-serif
+        }
+
+        .keys {
+            position: fixed;
+            bottom: 30px;
+            left: 40px;
+            font-size: 12px;
+            color: var(--dim);
+            opacity: 0.6
+        }
+
+        /* Animations */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .slide.active .anim {
+            animation: fadeUp .6s ease forwards;
+            opacity: 0
+        }
+
+        .slide.active .anim:nth-child(1) {
+            animation-delay: 0s
+        }
+
+        .slide.active .anim:nth-child(2) {
+            animation-delay: .1s
+        }
+
+        .slide.active .anim:nth-child(3) {
+            animation-delay: .2s
+        }
+
+        .slide.active .anim:nth-child(4) {
+            animation-delay: .3s
+        }
+
+        /* Roadmap */
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 900px;
+            position: relative;
+            margin-top: 40px
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 24px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 0
+        }
+
+        .phase {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            flex: 1
+        }
+
+        .phase-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 2px solid var(--teal);
+            margin: 16px auto;
+            transition: .3s
+        }
+
+        .phase:hover .phase-dot {
+            background: var(--teal);
+            box-shadow: 0 0 15px var(--teal)
+        }
+
+        .phase-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px
+        }
+
+        .phase-desc {
+            font-size: 0.8rem;
+            color: var(--dim)
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="deck" id="deck">
+
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <div class="anim" style="color:var(--teal);font-weight:700;letter-spacing:0.1em;margin-bottom:20px">NPO FUND
+                PROJECT</div>
+            <h1 class="anim">祭り・文化財を、<br>あなたの手で守る。</h1>
+            <p class="subtitle anim">寄付から「投資」へ。<br>新しい公益活動の資金循環モデル。</p>
+        </div>
+
+        <!-- Slide 2: Problem -->
+        <div class="slide">
+            <h2 class="anim">日本の文化が、消えようとしています。</h2>
+            <div class="grid3 anim">
+                <div class="card">
+                    <span class="icon">🏚️</span>
+                    <h3>資金不足</h3>
+                    <p>過疎化と氏子の減少により、多くの祭りや神社が修繕費用を賄えず、存続の危機に瀕しています。</p>
+                </div>
+                <div class="card">
+                    <span class="icon">💔</span>
+                    <h3>制度の限界</h3>
+                    <p>補助金頼みの構造は限界を迎えています。一律的な支援では、個々の多様な文化を守りきれません。</p>
+                </div>
+                <div class="card">
+                    <span class="icon">📉</span>
+                    <h3>不透明性</h3>
+                    <p>「寄付がどう使われたか分からない」という不信感が、新しい支援者の参入を阻んでいます。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Solution -->
+        <div class="slide">
+            <h2 class="anim">解決策：市場原理 × AI監査</h2>
+            <p class="desc anim" style="margin-bottom:40px">「誰もが投資家になれる」新しいプラットフォームを提供します。</p>
+            <div class="grid2 anim">
+                <div class="card" style="border-color:var(--teal)">
+                    <span class="icon">📈</span>
+                    <h3>応援が「資金」になる</h3>
+                    <p>単なる寄付ではなく、リターン（体験・名誉）を伴う「投資」として参加。成果を出す活動に資金が集まる市場を作ります。</p>
+                </div>
+                <div class="card" style="border-color:var(--accent)">
+                    <span class="icon">🤖</span>
+                    <h3>AIが「信頼」を担保</h3>
+                    <p>資金の使い道をAIが常時監査。不正を即座に検知し、誰もが安心して支援できる透明性を保証します。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Use Case -->
+        <div class="slide">
+            <h2 class="anim">ユーザー体験：祭りのオーナーになる</h2>
+            <div style="display:flex;gap:20px;align-items:center;margin-top:20px" class="anim">
+                <div class="card" style="width:280px;text-align:center">
+                    <div style="font-size:3rem;margin-bottom:10px">📱</div>
+                    <h3>1. 選ぶ</h3>
+                    <p style="font-size:0.9rem">アプリで応援したい祭りを検索。<br>修復計画と予算を確認。</p>
+                </div>
+                <div style="font-size:2rem;color:var(--dim)">→</div>
+                <div class="card"
+                    style="width:280px;text-align:center;border-color:var(--teal);box-shadow:0 0 20px rgba(34,211,187,0.2)">
+                    <div style="font-size:3rem;margin-bottom:10px">💰</div>
+                    <h3>2. 投資する</h3>
+                    <p style="font-size:0.9rem">1,000円から参加可能。<br>自分の名前が刻まれる。</p>
+                </div>
+                <div style="font-size:2rem;color:var(--dim)">→</div>
+                <div class="card" style="width:280px;text-align:center">
+                    <div style="font-size:3rem;margin-bottom:10px">🎉</div>
+                    <h3>3. 体験する</h3>
+                    <p style="font-size:0.9rem">VIP席での観覧、直会への参加。<br>「客」ではなく「当事者」へ。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Structure -->
+        <div class="slide">
+            <h2 class="anim">持続可能な仕組み</h2>
+            <div class="grid2 anim">
+                <div class="card">
+                    <h3 style="color:var(--text)">三重の防御ライン</h3>
+                    <ul style="list-style:none;margin-top:16px;color:var(--dim)">
+                        <li style="margin-bottom:12px">🛡️ <strong>1. AI監査 (常時)</strong><br>全データの異常検知</li>
+                        <li style="margin-bottom:12px">🕵️ <strong>2. 調査NPO (現地)</strong><br>プロによる実態確認</li>
+                        <li>⚖️ <strong>3. 裁定機関 (判断)</strong><br>公平な処分と認定</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 style="color:var(--text)">ハイブリッド資金</h3>
+                    <div style="display:flex;gap:12px;margin-top:16px">
+                        <div
+                            style="flex:1;background:rgba(255,255,255,0.05);padding:12px;border-radius:12px;text-align:center">
+                            <div style="font-size:1.5rem;font-weight:900;color:var(--accent2)">30%</div>
+                            <div style="font-size:0.8rem">ベース<br>(最低保障)</div>
+                        </div>
+                        <div
+                            style="flex:2;background:rgba(34,211,187,0.1);padding:12px;border-radius:12px;text-align:center;border:1px solid var(--teal)">
+                            <div style="font-size:1.5rem;font-weight:900;color:var(--teal)">60%</div>
+                            <div style="font-size:0.8rem">マーケット<br>(成果連動)</div>
+                        </div>
+                        <div
+                            style="flex:0.5;background:rgba(255,255,255,0.05);padding:12px;border-radius:12px;text-align:center">
+                            <div style="font-size:1.5rem;font-weight:900;color:var(--warn)">10%</div>
+                            <div style="font-size:0.8rem">調査費</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Roadmap -->
+        <div class="slide">
+            <h2 class="anim">実現へのロードマップ</h2>
+            <p class="desc anim">小さく始め、大きく育てる。</p>
+            <div class="timeline anim">
+                <div class="phase">
+                    <div class="phase-title">Phase 0</div>
+                    <div class="phase-dot"></div>
+                    <div class="phase-desc">調査・設計<br>PoC開発</div>
+                </div>
+                <div class="phase">
+                    <div class="phase-title">Phase 1</div>
+                    <div class="phase-dot" style="background:var(--teal);border-color:var(--teal)"></div>
+                    <div class="phase-desc">地域パイロット<br>1自治体・15法人</div>
+                </div>
+                <div class="phase">
+                    <div class="phase-title">Phase 2</div>
+                    <div class="phase-dot"></div>
+                    <div class="phase-desc">広域展開<br>5-10自治体</div>
+                </div>
+                <div class="phase">
+                    <div class="phase-title">Phase 3</div>
+                    <div class="phase-dot"></div>
+                    <div class="phase-desc">全国展開<br>プラットフォーム化</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Closing -->
+        <div class="slide">
+            <div class="anim" style="font-size:5rem;margin-bottom:20px">🏮</div>
+            <h1 class="anim">千年の文化を、<br>次の千年へ。</h1>
+            <p class="subtitle anim">NPOファンド構想</p>
+        </div>
+
+    </div>
+
+    <div class="nav" id="nav"></div>
+    <div class="slide-number" id="slideNum"></div>
+    <div class="keys">← → キーで移動</div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const nav = document.getElementById('nav');
+        const slideNum = document.getElementById('slideNum');
+        let current = 0;
+
+        // Init Nav
+        slides.forEach((_, i) => {
+            const d = document.createElement('div');
+            d.className = 'dot' + (i === 0 ? ' active' : '');
+            d.onclick = () => goTo(i);
+            nav.appendChild(d);
+        });
+
+        function goTo(n) {
+            if (n < 0 || n >= slides.length) return;
+            // Update Layout
+            slides[current].classList.remove('active');
+            nav.children[current].classList.remove('active');
+
+            current = n;
+
+            slides[current].classList.add('active');
+            nav.children[current].classList.add('active');
+            slideNum.textContent = `${current + 1} / ${slides.length}`;
+        }
+
+        // Events
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowRight' || e.key === ' ') goTo(current + 1);
+            if (e.key === 'ArrowLeft') goTo(current - 1);
+        });
+
+        let tx = 0;
+        document.addEventListener('touchstart', e => tx = e.touches[0].clientX);
+        document.addEventListener('touchend', e => {
+            const d = e.changedTouches[0].clientX - tx;
+            if (Math.abs(d) > 50) d < 0 ? goTo(current + 1) : goTo(current - 1);
+        });
+
+        goTo(0);
+    </script>
+</body>
+
+</html>

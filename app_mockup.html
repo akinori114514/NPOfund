@@ -1,0 +1,2177 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NPOファンド App Mockup</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Inter:wght@400;500;600;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            /* Design Tokens from index.html - Polished */
+            --bg: #07071a;
+            --bg2: #0c0c28;
+            --surface: #14143a;
+            /* Slightly lighter for range */
+            --card: #1a1a55;
+            --accent: #7c6cf0;
+            --accent2: #a89afe;
+            --teal: #22d3bb;
+            --teal2: #5eead4;
+            --pink: #f472b6;
+            --orange: #fb923c;
+            --red: #f87171;
+            --green: #4ade80;
+            --text: #f0f0fa;
+            /* Brighter white */
+            --dim: #9494c0;
+            /* Better contrast (was #7a7aaa) */
+            --dim2: #6b6b95;
+            /* Better contrast (was #55557a) */
+            --glass: rgba(30, 30, 90, .45);
+            --glass-border: rgba(255, 255, 255, .1);
+            /* Stronger border */
+            --gold: #fbbf24;
+            --amber: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-feature-settings: "palt";
+            /* Proportional metrics for JP */
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background: #050510;
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            line-height: 1.6;
+            /* Improved readability */
+            letter-spacing: 0.03em;
+            /* Modern feel */
+        }
+
+        /* iPhone 15 Pro Frame */
+        .phone-frame {
+            width: 393px;
+            height: 852px;
+            background: var(--bg);
+            border-radius: 55px;
+            border: 8px solid #2a2a35;
+            box-shadow: 0 0 0 2px #444, 0 40px 100px rgba(0, 0, 0, 0.6);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+            transform: scale(0.95);
+            /* Fit in view */
+        }
+
+        @media (max-height: 900px) {
+            .phone-frame {
+                transform: scale(0.85);
+            }
+        }
+
+        /* Dynamic Island */
+        .dynamic-island {
+            position: absolute;
+            top: 11px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 126px;
+            height: 37px;
+            background: #000;
+            border-radius: 20px;
+            z-index: 1000;
+            transition: 0.3s;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 54px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 26px;
+            padding-top: 12px;
+            box-sizing: border-box;
+            font-size: 15px;
+            font-weight: 600;
+            z-index: 999;
+            color: #fff;
+        }
+
+        /* Screen Container */
+        .screen-container {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Base Screen Style */
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg);
+            overflow-y: auto;
+            padding-bottom: 90px;
+            /* Space for tab bar */
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform: scale(0.98);
+        }
+
+        .screen::-webkit-scrollbar {
+            width: 0;
+        }
+
+        .screen.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1);
+            z-index: 10;
+        }
+
+        /* Common Components */
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 18px;
+            /* Larger touch target */
+            background: linear-gradient(135deg, var(--teal), var(--teal2));
+            color: #000;
+            font-weight: 700;
+            border-radius: 18px;
+            border: none;
+            font-size: 15px;
+            /* Larger text */
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 12px rgba(34, 211, 187, 0.3);
+            /* Subtle depth */
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .card {
+            background: rgba(30, 30, 90, 0.5);
+            /* Slightly more opaque */
+            backdrop-filter: blur(24px);
+            /* Stronger blur */
+            border: 1px solid var(--glass-border);
+            border-radius: 22px;
+            /* Softer corners */
+            padding: 24px;
+            /* More breathing room */
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Tab Bar */
+        .tab-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 84px;
+            background: rgba(7, 7, 26, 0.92);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            padding-top: 10px;
+            z-index: 100;
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            color: var(--dim2);
+            font-size: 11px;
+            /* Improved readability */
+            font-weight: 500;
+            cursor: pointer;
+            width: 60px;
+            transition: 0.2s;
+        }
+
+        .tab-item.active {
+            color: var(--teal);
+        }
+
+        .tab-icon {
+            font-size: 24px;
+            margin-bottom: 2px;
+        }
+
+        /* Home Indicator */
+        .home-indicator {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 134px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            z-index: 1000;
+        }
+
+        /* Animations */
+        @keyframes fade {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(245, 158, 11, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+            }
+        }
+
+        @keyframes progress {
+            from {
+                width: 0;
+            }
+        }
+
+        @keyframes stroke {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        /* Onboarding */
+        .onboarding-container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .onboarding-slide {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            text-align: center;
+            display: none;
+            width: 100%;
+            animation: fade 0.5s;
+        }
+
+        .onboarding-slide.active {
+            display: flex;
+        }
+
+        .slide-img {
+            width: 280px;
+            height: 280px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .lantern-group {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .slide-title {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+
+        .slide-desc {
+            color: var(--dim);
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .dots {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--dim2);
+            transition: 0.3s;
+        }
+
+        .dot.active {
+            background: var(--teal);
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* Home */
+        .header {
+            padding: 60px 24px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--accent), var(--teal));
+            padding: 2px;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #000;
+            object-fit: cover;
+        }
+
+        .summary-card {
+            margin: 0 24px 30px;
+            background: linear-gradient(135deg, rgba(124, 108, 240, 0.15), rgba(34, 211, 187, 0.05));
+            border: 1px solid rgba(124, 108, 240, 0.3);
+            padding: 24px;
+            border-radius: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .summary-label {
+            font-size: 13px;
+            color: var(--dim2);
+            margin-bottom: 4px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .summary-amount {
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+            background: linear-gradient(to right, #fff, #a89afe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .summary-stats {
+            display: flex;
+            gap: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 16px;
+        }
+
+        .stat-item {
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin: 0 24px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Horizontal Scroll (Matsuri) */
+        .carousel {
+            display: flex;
+            overflow-x: auto;
+            padding: 0 24px 20px;
+            gap: 16px;
+            scroll-snap-type: x mandatory;
+        }
+
+        .carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .matsuri-card {
+            min-width: 240px;
+            height: 320px;
+            border-radius: 24px;
+            background: var(--surface);
+            position: relative;
+            overflow: hidden;
+            scroll-snap-align: start;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: 0.3s;
+        }
+
+        .matsuri-card:active {
+            transform: scale(0.98);
+        }
+
+        .matsuri-img {
+            height: 60%;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .matsuri-img::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background: linear-gradient(to top, var(--surface), transparent);
+        }
+
+        .matsuri-info {
+            padding: 16px;
+        }
+
+        .matsuri-tag {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            padding: 4px 10px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin: 12px 0 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--teal);
+            border-radius: 3px;
+            animation: progress 1.5s ease-out forwards;
+        }
+
+        /* News List */
+        .news-list {
+            padding: 0 24px 40px;
+        }
+
+        .news-item {
+            display: flex;
+            gap: 14px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--glass-border);
+            align-items: flex-start;
+        }
+
+        .news-icon {
+            font-size: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .news-content h4 {
+            font-size: 14px;
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+
+        .news-content p {
+            font-size: 12px;
+            color: var(--dim);
+        }
+
+        /* Discover */
+        .search-bar {
+            margin: 60px 24px 20px;
+            background: var(--surface);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--dim);
+            font-size: 14px;
+        }
+
+        .filter-chips {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 0 24px 20px;
+        }
+
+        .chip {
+            padding: 8px 16px;
+            background: var(--surface);
+            border: 1px solid var(--glass-border);
+            border-radius: 100px;
+            font-size: 12px;
+            white-space: nowrap;
+            color: var(--dim);
+        }
+
+        .chip.active {
+            background: rgba(34, 211, 187, 0.15);
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
+        .map-container {
+            height: 400px;
+            margin: 0 24px 30px;
+            border-radius: 20px;
+            background: #0f0f2d;
+            border: 1px solid var(--glass-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .map-bg {
+            width: 100%;
+            height: 100%;
+            opacity: 0.3;
+            background-image: radial-gradient(circle at 50% 50%, #2a2a5a 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .map-dot {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--teal);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--teal);
+            animation: pulse 2s infinite;
+            cursor: pointer;
+        }
+
+        .map-dot.red {
+            background: var(--red);
+            box-shadow: 0 0 10px var(--red);
+            animation: pulse 1s infinite;
+        }
+
+        .map-dot::after {
+            content: attr(data-label);
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 4px 8px;
+            border-radius: 4px;
+            pointer-events: none;
+            opacity: 0;
+            transition: 0.2s;
+        }
+
+        .map-dot:hover::after {
+            opacity: 1;
+            bottom: 20px;
+        }
+
+        /* Detail */
+        .detail-hero {
+            height: 280px;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            border-radius: 0 0 30px 30px;
+            overflow: hidden;
+        }
+
+        .detail-hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, var(--bg), transparent 60%);
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 60px;
+            left: 24px;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 18px;
+        }
+
+        .detail-content {
+            padding: 24px;
+            margin-top: -60px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .detail-title {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 24px;
+            line-height: 1.3;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .detail-stats {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .detail-badge {
+            flex: 1;
+            background: rgba(22, 22, 80, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .budget-bar {
+            display: flex;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 16px 0;
+        }
+
+        .budget-seg {
+            height: 100%;
+        }
+
+        /* Tab Bar Hide Helper */
+        .tab-bar[style*="display: none"]+.home-indicator {
+            bottom: 8px;
+        }
+
+        /* Invest Flow */
+        .am-amount {
+            font-size: 40px;
+            font-weight: 900;
+            text-align: center;
+            margin: 20px 0 30px;
+            letter-spacing: -1px;
+        }
+
+        .amount-opts {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .amount-opt {
+            padding: 10px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            background: var(--surface);
+            color: var(--dim);
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .amount-opt.active {
+            background: rgba(34, 211, 187, 0.15);
+            border-color: var(--teal);
+            color: var(--teal);
+            transform: scale(1.05);
+        }
+
+        .rank-preview {
+            border: 1px solid var(--gold);
+            background: rgba(251, 191, 36, 0.05);
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rank-arrow {
+            font-size: 24px;
+            color: var(--dim);
+            margin: 10px 0;
+            animation: slideUp 1s infinite alternate;
+        }
+
+        /* Invest Complete */
+        .lantern-container {
+            height: 360px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .lantern-main {
+            width: 140px;
+            height: 180px;
+            background: linear-gradient(to bottom, #ff7e79, #d9534f);
+            border-radius: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 60px rgba(245, 158, 11, 0.4);
+            position: relative;
+            animation: float 4s ease-in-out infinite, pulse 3s infinite;
+        }
+
+        .lantern-main::before,
+        .lantern-main::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 16px;
+            background: #222;
+            border-radius: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .lantern-main::before {
+            top: -14px;
+        }
+
+        .lantern-main::after {
+            bottom: -14px;
+        }
+
+        .lantern-text {
+            font-family: 'serif';
+            font-size: 48px;
+            font-weight: 900;
+            color: #000;
+        }
+
+        .msg-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 24px;
+            margin: 0 24px;
+            font-family: 'serif';
+            line-height: 1.8;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+        }
+
+        .msg-card::before {
+            content: '”';
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            font-size: 80px;
+            opacity: 0.1;
+            font-family: sans-serif;
+        }
+
+        /* Notifications */
+        .noti-item {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            gap: 14px;
+            transition: 0.2s;
+        }
+
+        .noti-item:active {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .noti-item.unread {
+            background: rgba(34, 211, 187, 0.03);
+            border-left: 3px solid var(--teal);
+        }
+
+        .noti-scz {
+            background: rgba(255, 255, 255, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        /* My Page */
+        .mypage-header {
+            text-align: center;
+            padding: 40px 24px;
+        }
+
+        .my-avatar-lg {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid var(--teal);
+            padding: 3px;
+            margin: 0 auto 16px;
+        }
+
+        .my-avatar-lg img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .rank-row {
+            display: flex;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--glass-border);
+            gap: 12px;
+        }
+
+        .rank-icon {
+            font-size: 24px;
+            width: 32px;
+            text-align: center;
+        }
+
+        /* Audit Report */
+        .audit-gauge-lg {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 30px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .audit-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 0 24px 30px;
+        }
+
+        .audit-cell {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        /* Craftsman Diary */
+        .timeline {
+            padding: 0 24px 40px;
+            border-left: 2px solid rgba(255, 255, 255, 0.1);
+            margin-left: 40px;
+        }
+
+        .t-event {
+            position: relative;
+            padding-left: 24px;
+            margin-bottom: 40px;
+        }
+
+        .t-dot {
+            position: absolute;
+            left: -31px;
+            top: 0;
+            width: 16px;
+            height: 16px;
+            background: var(--bg);
+            border: 3px solid var(--teal);
+            border-radius: 50%;
+        }
+
+        .t-date {
+            font-size: 12px;
+            color: var(--dim);
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .t-content {
+            background: var(--surface);
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+        }
+
+        /* Live */
+        .live-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding-bottom: 100px;
+        }
+
+        .reaction-area {
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .floating-emoji {
+            position: absolute;
+            font-size: 32px;
+            animation: slideUp 2s ease-out forwards;
+            opacity: 0;
+        }
+
+        .chat-msg {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 12px;
+            border-radius: 20px;
+            margin: 4px 24px;
+            align-self: flex-start;
+            backdrop-filter: blur(4px);
+            font-size: 13px;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        /* Wrapped */
+        .wrapped-container {
+            height: 100%;
+            background: linear-gradient(135deg, #2a1a4a, #0c0c28);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wrapped-num {
+            font-size: 80px;
+            font-weight: 900;
+            line-height: 1;
+            color: var(--gold);
+            text-shadow: 0 0 30px rgba(251, 191, 36, 0.6);
+            margin: 20px 0;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--gold);
+            animation: float 3s infinite linear;
+        }
+
+        /* PLACEHOLDER_CSS */
+    </style>
+</head>
+
+<body>
+
+    <div class="phone-frame">
+        <div class="dynamic-island"></div>
+        <div class="status-bar">
+            <span>9:41</span>
+            <span>📶 🔋</span>
+        </div>
+
+        <div class="screen-container">
+            <!-- Screens will be injected here -->
+
+            <!-- Screen 1: Onboarding -->
+            <div id="screen-onboarding" class="screen active"
+                style="padding-bottom: 0; z-index: 20; background: radial-gradient(circle at 50% 30%, #1a1a40, var(--bg));">
+                <div class="onboarding-container">
+
+                    <!-- Slide 1: The Crisis (Problem) -->
+                    <div class="onboarding-slide active" id="slide-1">
+                        <div class="slide-img">
+                            <div class="lantern-group">
+                                <div
+                                    style="position:absolute; top:30%; left:50%; transform:translate(-50%, -50%); font-size:80px; filter: blur(2px) grayscale(0.8); opacity:0.6; animation: float 6s ease-in-out infinite;">
+                                    🏮</div>
+                                <div
+                                    style="position:absolute; top:20%; left:20%; font-size:40px; filter: blur(1px) grayscale(1); opacity:0.4;">
+                                    🏮</div>
+                                <div
+                                    style="position:absolute; top:60%; left:80%; font-size:50px; filter: blur(3px) grayscale(1); opacity:0.3;">
+                                    🏮</div>
+                            </div>
+                            <div
+                                style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#ff4444; font-weight:900; font-size:24px; text-shadow:0 2px 10px rgba(0,0,0,0.8); transform:rotate(-15deg); opacity:0; animation:fade 2s forwards 1s;">
+                                資金不足</div>
+                        </div>
+                        <h2 class="slide-title">日本の祭りが、<br>消えようとしています。</h2>
+                        <p class="slide-desc">資金難と担い手不足により、<br>多くの祭りが存続の危機にあります。</p>
+                    </div>
+
+                    <!-- Slide 2: The Solution (Mechanism) -->
+                    <div class="onboarding-slide" id="slide-2">
+                        <div class="slide-img"
+                            style="display:flex; flex-direction:column; justify-content:center; align-items:center; gap:20px;">
+                            <div style="font-size:50px;">💰</div>
+                            <div style="font-size:20px; color:var(--dim);">⬇ 投資</div>
+                            <div style="font-size:60px;">⛩️</div>
+                            <div style="font-size:20px; color:var(--dim);">⬇ 修復・開催</div>
+                            <div style="font-size:50px;">🎉</div>
+                        </div>
+                        <h2 class="slide-title">あなたの投資が、<br>祭りを直接救います。</h2>
+                        <p class="slide-desc">寄付ではありません。<br>修復や運営資金として活用されます。</p>
+                    </div>
+
+                    <!-- Slide 3: The Return (Benefit) -->
+                    <div class="onboarding-slide" id="slide-3">
+                        <div class="slide-img" style="display:flex; justify-content:center; align-items:center;">
+                            <div style="position:relative; animation: float 3s ease-in-out infinite;">
+                                <div style="font-size:80px;">🎟️</div>
+                                <div style="position:absolute; bottom:-10px; right:-10px; font-size:50px;">🍶</div>
+                            </div>
+                        </div>
+                        <h2 class="slide-title">リターンは、<br>特別な「体験」です。</h2>
+                        <p class="slide-desc">VIP席、名入り提灯、直会への参加。<br>文化のオーナーになる喜びを。</p>
+                    </div>
+
+                    <div class="dots">
+                        <div class="dot active" onclick="setSlide(1)"></div>
+                        <div class="dot" onclick="setSlide(2)"></div>
+                        <div class="dot" onclick="setSlide(3)"></div>
+                    </div>
+
+                    <div style="padding: 0 40px; width: 100%;">
+                        <button class="btn" style="margin-bottom: 16px;" onclick="navigate('home')">はじめる</button>
+                        <div style="text-align: center; color: var(--dim); font-size: 13px;" onclick="navigate('home')">
+                            すでにアカウントをお持ちの方</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screen 2: Home -->
+            <div id="screen-home" class="screen">
+                <div class="header">
+                    <div>
+                        <div style="font-size: 13px; color: var(--dim2); margin-bottom: 2px;">2026年2月14日</div>
+                        <div style="font-size: 20px; font-weight: 700;">おはよう、田中さん ☀️</div>
+                    </div>
+                    <div class="avatar" onclick="navigate('mypage')"><img
+                            src="https://ui-avatars.com/api/?name=Kenta+Tanaka&background=0D8ABC&color=fff"
+                            alt="Avatar"></div>
+                </div>
+
+                <!-- Welcome/Guide Banner -->
+                <div id="welcome-banner"
+                    style="margin: 0 24px 24px; padding: 16px; background: linear-gradient(to right, rgba(34, 211, 187, 0.2), rgba(124, 108, 240, 0.2)); border-radius: 16px; border: 1px solid rgba(34, 211, 187, 0.3); position: relative;">
+                    <div style="position:absolute; top:8px; right:12px; font-size:18px; color:var(--dim); cursor:pointer;"
+                        onclick="document.getElementById('welcome-banner').style.display='none'">×</div>
+                    <div style="font-weight:700; font-size:14px; margin-bottom:4px; color:var(--teal);">🔰 はじめての方へ</div>
+                    <div style="font-size:12px; line-height:1.5; color:var(--text);">
+                        1. 応援したい祭りを選ぶ<br>
+                        2. 予算の使い道を確認して投資<br>
+                        3. 修復レポートや特別な体験を受け取る
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="summary-label">あなたの投資総額</div>
+                    <div class="summary-amount">¥156,000</div>
+                    <div class="summary-stats">
+                        <div class="stat-item" style="color:var(--teal);"><span style="font-size:16px;">⛩️</span> 支援中: 4
+                        </div>
+                        <div class="stat-item" style="color:var(--gold); margin-left: auto;"><span
+                                style="font-size:16px;">🎁</span> 今月の配当: 2件</div>
+                    </div>
+                    <!-- Particle effect canvas container could go here -->
+                </div>
+
+                <div class="section-title"><span>📢</span> 注目の祭り</div>
+                <div class="carousel">
+                    <!-- Card 1 -->
+                    <div class="matsuri-card" onclick="navigate('festival-detail')">
+                        <div class="matsuri-img"
+                            style="background-image: url('https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?q=80&w=600&auto=format&fit=crop');">
+                            <div class="matsuri-tag">🔥 達成率 92%</div>
+                        </div>
+                        <div class="matsuri-info">
+                            <div style="font-weight:700; font-size:15px; margin-bottom:4px;">祇園祭 宵山ファンド</div>
+                            <div style="font-size:11px; color:var(--dim);">京都府京都市 • あと8%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 92%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="matsuri-card" onclick="navigate('festival-detail')">
+                        <div class="matsuri-img"
+                            style="background-image: url('https://images.unsplash.com/photo-1582270966779-373d9370cb9e?q=80&w=600&auto=format&fit=crop');">
+                            <div class="matsuri-tag">⚖️ 達成率 67%</div>
+                        </div>
+                        <div class="matsuri-info">
+                            <div style="font-weight:700; font-size:15px; margin-bottom:4px;">秩父夜祭 山車修復</div>
+                            <div style="font-size:11px; color:var(--dim);">埼玉県秩父市 • あと33%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 67%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="matsuri-card" onclick="navigate('discover')">
+                        <div class="matsuri-img"
+                            style="background-image: url('https://images.unsplash.com/photo-1516280440614-6697288d5d38?q=80&w=600&auto=format&fit=crop');">
+                            <div class="matsuri-tag" style="border-color:var(--red); color:#ffcccc;">🔴 絶滅危惧</div>
+                        </div>
+                        <div class="matsuri-info">
+                            <div style="font-weight:700; font-size:15px; margin-bottom:4px;">能登あばれ祭 緊急支援</div>
+                            <div style="font-size:11px; color:var(--dim);">石川県能登町 • 目標 ¥5M</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 35%; background:var(--red);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-title" style="margin-top: 20px;"><span>📋</span> 最新ニュース</div>
+                <div class="news-list">
+                    <div class="news-item" onclick="navigate('craftsman-diary')">
+                        <div class="news-icon">🔔</div>
+                        <div class="news-content">
+                            <h4>八幡宮: 神輿修復が完了しました！</h4>
+                            <p>3分前 • 写真レポートを見る</p>
+                        </div>
+                    </div>
+                    <div class="news-item" onclick="navigate('audit-report')">
+                        <div class="news-icon">📊</div>
+                        <div class="news-content">
+                            <h4>AI監査レポート更新: 瑞雲寺 四半期</h4>
+                            <p>2時間前 • 評価 A (92/100)</p>
+                        </div>
+                    </div>
+                    <div class="news-item" onclick="navigate('discover')">
+                        <div class="news-icon">🎊</div>
+                        <div class="news-content">
+                            <h4>絶滅危惧祭りに新規3件が登録されました</h4>
+                            <p>5時間前 • 緊急支援リストを確認</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screen 3: Discover -->
+            <div id="screen-discover" class="screen">
+                <div class="search-bar">
+                    <span>🔍</span> キーワード、地域、ジャンルで検索
+                </div>
+
+                <div style="padding: 0 24px 16px; display:flex; gap:10px;">
+                    <div
+                        style="flex:1; background:rgba(34, 211, 187, 0.15); color:var(--teal); padding:10px; border-radius:12px; text-align:center; font-size:13px; font-weight:700; border:1px solid var(--teal);">
+                        🗺️ 地図で探す</div>
+                    <div
+                        style="flex:1; background:var(--surface); color:var(--dim); padding:10px; border-radius:12px; text-align:center; font-size:13px; border:1px solid var(--glass-border);">
+                        📋 一覧で探す</div>
+                </div>
+
+                <div class="filter-chips">
+                    <div class="chip active">人気順</div>
+                    <div class="chip">ケのスコア順</div>
+                    <div class="chip">緊急度順</div>
+                    <div class="chip">絶滅危惧 🔴</div>
+                    <div class="chip">新着</div>
+                </div>
+
+                <div class="map-container">
+                    <div class="map-bg"></div>
+                    <!-- Simplified Japan Map SVG -->
+                    <svg width="100%" height="100%" viewBox="0 0 300 300"
+                        style="position:absolute; top:0; left:0; pointer-events:none; opacity:0.2;">
+                        <path
+                            d="M220,50 L210,60 L200,80 L180,90 L160,100 L140,120 L130,140 L110,150 L90,160 L70,170 L50,180 L40,200 L60,210 L80,200 L100,190 L120,180 L150,170 L180,160 L200,140 L220,120 L240,100 L250,80 Z"
+                            fill="#7c6cf0" />
+                    </svg>
+
+                    <!-- Dots -->
+                    <div class="map-dot" style="top: 60%; left: 45%;" data-label="祇園祭"
+                        onclick="navigate('festival-detail')"></div>
+                    <div class="map-dot" style="top: 40%; left: 60%; background:var(--accent);" data-label="ねぶた"
+                        onclick="navigate('festival-detail')"></div>
+                    <div class="map-dot red" style="top: 55%; left: 35%;" data-label="能登あばれ祭"
+                        onclick="navigate('festival-detail')"></div>
+                    <div class="map-dot" style="top: 65%; left: 55%; background:var(--accent);" data-label="秩父夜祭"
+                        onclick="navigate('festival-detail')"></div>
+
+                    <div class="map-dot"
+                        style="top: 75%; left: 25%; width:6px; height:6px; background:#fff; animation:none; opacity:0.5;">
+                    </div>
+                    <div class="map-dot"
+                        style="top: 30%; left: 70%; width:6px; height:6px; background:#fff; animation:none; opacity:0.5;">
+                    </div>
+                </div>
+
+                <div class="section-title" style="color:var(--red);">⚠️ 絶滅危惧祭りリスト</div>
+                <div class="matsuri-card"
+                    style="margin: 0 24px 20px; height: auto; display:flex; flex-direction:row; padding:16px; border-left: 3px solid var(--red);"
+                    onclick="navigate('festival-detail')">
+                    <div style="flex:1;">
+                        <div style="font-weight:700; font-size:15px; margin-bottom:4px;">能登半島 K村の虫送り</div>
+                        <div style="font-size:12px; color:var(--dim); margin-bottom:8px;">担い手: 残り3名 / 歴史: 350年</div>
+                        <div style="font-size:12px; color:var(--red); font-weight:700;">緊急支援ファンド →</div>
+                    </div>
+                    <div
+                        style="width:80px; height:80px; border-radius:12px; background: #333; background-image:url('https://images.unsplash.com/photo-1516280440614-6697288d5d38?q=80&w=200&fit=crop'); background-size:cover;">
+                    </div>
+                </div>
+                <div style="height:1px;"></div>
+            </div> <!-- Screen 4: Festival Detail -->
+            <div id="screen-festival-detail" class="screen">
+                <div class="detail-hero"
+                    style="background-image: url('https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?q=80&w=800&auto=format&fit=crop');">
+                    <div class="back-btn" onclick="navigate('home', {back: true})">←</div>
+                </div>
+
+                <div class="detail-content">
+                    <div class="detail-title">八幡宮 秋季例大祭<br>修復ファンド</div>
+
+                    <div style="margin-bottom:24px;">
+                        <div
+                            style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:13px; font-weight:600;">
+                            <span style="color:var(--teal);">85% 達成</span>
+                            <span style="color:var(--dim);">あと ¥750,000</span>
+                        </div>
+                        <div class="progress-bar" style="height:10px; background:rgba(255,255,255,0.1);">
+                            <div class="progress-fill" style="width: 85%;"></div>
+                        </div>
+                        <div style="text-align:right; font-size:12px; color:var(--dim); margin-top:4px;">¥4,250,000 /
+                            ¥5,000,000</div>
+                    </div>
+
+                    <div class="detail-stats">
+                        <div class="detail-badge" onclick="navigate('audit-report')">
+                            <div style="font-size:12px; color:var(--dim); margin-bottom:8px;">透明性スコア</div>
+                            <!-- SVG Circle -->
+                            <div
+                                style="width:60px; height:60px; position:relative; display:flex; align-items:center; justify-content:center;">
+                                <svg width="60" height="60" style="transform:rotate(-90deg);">
+                                    <circle cx="30" cy="30" r="26" stroke="rgba(255,255,255,0.1)" stroke-width="4"
+                                        fill="none" />
+                                    <circle cx="30" cy="30" r="26" stroke="var(--teal)" stroke-width="4" fill="none"
+                                        stroke-dasharray="163" stroke-dashoffset="10"
+                                        style="animation: stroke 1.5s ease-out forwards;" />
+                                </svg>
+                                <span
+                                    style="position:absolute; font-weight:900; font-size:18px; color:var(--teal);">94</span>
+                            </div>
+                            <div style="font-size:10px; color:var(--teal); margin-top:4px;">🔍 詳細を見る</div>
+                        </div>
+
+                        <div class="detail-badge" onclick="navigate('rank-detail')">
+                            <div style="font-size:12px; color:var(--dim); margin-bottom:8px;">あなたのランク</div>
+                            <div
+                                style="font-size:32px; margin-bottom:4px; filter: drop-shadow(0 0 10px rgba(251,191,36,0.4));">
+                                👑</div>
+                            <div style="font-weight:700; color:var(--gold); font-size:14px;">筆頭氏子</div>
+                            <div style="font-size:10px; color:var(--dim);">総代クラス</div>
+                        </div>
+                    </div>
+
+                    <div class="card" onclick="navigate('craftsman-diary')">
+                        <div style="font-weight:700; margin-bottom:8px;">🔨 進行中のプロジェクト</div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <div style="font-size:14px; margin-bottom:4px;">宮大工 鈴木氏による神輿修復</div>
+                                <div style="font-size:12px; color:var(--dim);">進捗: 漆の下地処理中 (60%)</div>
+                            </div>
+                            <div
+                                style="width:32px; height:32px; background:rgba(255,255,255,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                                ▶</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 24px;">
+                        <div style="font-weight:700; margin-bottom:12px;">📊 AI監査サマリー</div>
+                        <div style="margin-bottom:8px; display:flex; align-items:center; gap:10px;">
+                            <span style="font-size:12px; width:80px; color:var(--dim);">ケのスコア</span>
+                            <div style="flex:1; height:6px; background:rgba(255,255,255,0.1); border-radius:3px;">
+                                <div style="width:91%; height:100%; background:var(--teal); border-radius:3px;"></div>
+                            </div>
+                            <span style="font-size:12px;">91</span>
+                        </div>
+                        <div style="margin-bottom:8px; display:flex; align-items:center; gap:10px;">
+                            <span style="font-size:12px; width:80px; color:var(--dim);">財務健全性</span>
+                            <div style="flex:1; height:6px; background:rgba(255,255,255,0.1); border-radius:3px;">
+                                <div style="width:96%; height:100%; background:var(--teal); border-radius:3px;"></div>
+                            </div>
+                            <span style="font-size:12px;">96</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 30px;">
+                        <div style="font-weight:700; margin-bottom:12px;">💰 予算内訳 (透明化済み)</div>
+                        <div class="budget-bar">
+                            <div class="budget-seg" style="width:60%; background:var(--teal);"></div>
+                            <div class="budget-seg" style="width:16%; background:var(--accent);"></div>
+                            <div class="budget-seg" style="width:10%; background:var(--gold);"></div>
+                            <div class="budget-seg" style="width:9%; background:var(--pink);"></div>
+                            <div class="budget-seg" style="width:5%; background:var(--dim);"></div>
+                        </div>
+                        <div style="display:flex; flex-wrap:wrap; gap:12px; font-size:11px; color:var(--dim);">
+                            <span style="display:flex; align-items:center; gap:4px;"><span
+                                    style="width:8px; height:8px; background:var(--teal); border-radius:2px;"></span>修復
+                                60%</span>
+                            <span style="display:flex; align-items:center; gap:4px;"><span
+                                    style="width:8px; height:8px; background:var(--accent); border-radius:2px;"></span>警備
+                                16%</span>
+                            <span style="display:flex; align-items:center; gap:4px;"><span
+                                    style="width:8px; height:8px; background:var(--gold); border-radius:2px;"></span>直会
+                                10%</span>
+                        </div>
+                    </div>
+
+                    <div style="height:60px;"></div> <!-- Spacer -->
+                </div>
+
+                <div
+                    style="position:fixed; bottom:0; left:0; width:100%; padding:20px; background:linear-gradient(to top, var(--bg), transparent); pointer-events:none;">
+                    <button class="btn" style="pointer-events:auto; box-shadow: 0 10px 30px rgba(34, 211, 187, 0.4);"
+                        onclick="navigate('invest-flow')">このファンドに投資する</button>
+                </div>
+            </div>
+
+            <!-- Screen 5: Invest Flow -->
+            <div id="screen-invest-flow" class="screen">
+                <div class="header">
+                    <div style="font-size:18px; font-weight:700;" onclick="navigate('festival-detail', {back:true})">←
+                        投資する</div>
+                </div>
+
+                <div style="padding: 0 24px;">
+                    <div class="card" style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+                        <div style="font-size:24px;">🏮</div>
+                        <div>
+                            <div style="font-weight:700; font-size:14px;">八幡宮 秋季例大祭ファンド</div>
+                            <div style="font-size:11px; color:var(--teal);">🔍 透明性スコア 94</div>
+                        </div>
+                    </div>
+
+                    <div style="text-align:center; color:var(--dim); font-size:13px;">投資金額</div>
+                    <div class="am-amount" id="invest-amount">¥ 10,000</div>
+
+                    <div class="amount-opts">
+                        <div class="amount-opt" onclick="setAmount(1000)">¥1,000</div>
+                        <div class="amount-opt" onclick="setAmount(5000)">¥5,000</div>
+                        <div class="amount-opt active" onclick="setAmount(10000)">¥10,000</div>
+                        <div class="amount-opt" onclick="setAmount(50000)">¥50,000</div>
+                    </div>
+
+                    <div
+                        style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; padding:0 10px;">
+                        <div style="font-size:14px;">毎月の定期投資にする</div>
+                        <div
+                            style="width:50px; height:30px; background:var(--teal); border-radius:15px; position:relative;">
+                            <div
+                                style="width:26px; height:26px; background:#fff; border-radius:50%; position:absolute; top:2px; right:2px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rank-preview">
+                        <div style="font-weight:700; margin-bottom:12px;">📈 投資後のあなたのランク</div>
+                        <div
+                            style="display:flex; justify-content:center; align-items:center; gap:10px; font-size:14px;">
+                            <span style="color:var(--dim);">氏子</span>
+                            <span style="color:var(--dim);">───</span>
+                            <div class="rank-arrow">⬆</div>
+                            <span style="color:var(--dim);">───</span>
+                            <span style="font-weight:700; color:var(--gold); font-size:18px;">年行司</span>
+                        </div>
+                        <div style="margin-top:16px; text-align:left; font-size:13px;">
+                            <div style="margin-bottom:6px; opacity:0; animation:fade 0.5s forwards 0.5s;">✨ 直会参加権が解放されます
+                            </div>
+                            <div style="opacity:0; animation:fade 0.5s forwards 0.8s;">✨ 修復動画の全編が視聴可能に</div>
+                        </div>
+                    </div>
+
+                    <div style="font-size:11px; color:var(--dim2); text-align:center; margin-bottom:20px;">
+                        この投資は寄付金控除の対象です。<br>投資は元本保証ではありません。
+                    </div>
+
+                    <button class="btn" onclick="navigate('invest-complete')" style="font-size:18px;">¥10,000 を投資する
+                        🔐</button>
+                    <div style="height:40px;"></div>
+                </div>
+            </div>
+
+            <!-- Screen 6: Invest Complete -->
+            <div id="screen-invest-complete" class="screen"
+                style="background: radial-gradient(circle at 50% 40%, rgba(245, 158, 11, 0.15), var(--bg) 70%);">
+                <div style="padding: 40px 24px; text-align:center;">
+                    <div style="font-size:16px; margin-bottom:8px;">投資が完了しました ✅</div>
+                    <div style="font-size:40px; font-weight:900; color:var(--teal); margin-bottom:4px;">¥10,000</div>
+                    <div style="font-size:14px; color:var(--dim); margin-bottom:40px;">八幡宮 秋季例大祭ファンド</div>
+
+                    <div class="lantern-container">
+                        <div class="lantern-main">
+                            <div class="lantern-text">田中</div>
+
+                            <!-- Sparkles -->
+                            <div
+                                style="position:absolute; top:-20px; left:-20px; font-size:24px; animation:fade 2s infinite;">
+                                ✨</div>
+                            <div
+                                style="position:absolute; bottom:20px; right:-30px; font-size:20px; animation:fade 2s infinite 1s;">
+                                ✨</div>
+                            <div
+                                style="position:absolute; top:40px; right:-40px; font-size:16px; animation:fade 3s infinite 0.5s;">
+                                ✨</div>
+                        </div>
+                    </div>
+
+                    <div class="msg-card"
+                        style="margin-bottom:30px; opacity:0; animation:slideUp 1s ease-out forwards 1s;">
+                        <div style="font-size:12px; color:var(--dim); margin-bottom:8px; font-family:sans-serif;">🙏 八幡宮
+                            宮司 高橋より</div>
+                        田中様のお気持ちに心より御礼申し上げます。あなたのお名前を記した提灯を東参道に掲出いたします。秋季例大祭でお待ちしております。
+                    </div>
+
+                    <div
+                        style="background:rgba(251, 191, 36, 0.1); border:1px solid var(--gold); border-radius:12px; padding:16px; margin-bottom:30px; opacity:0; animation:slideUp 0.5s ease-out forwards 2s;">
+                        <div style="font-weight:700; color:var(--gold); margin-bottom:4px;">🎉 年行司にランクアップ！</div>
+                        <div style="font-size:12px;">特典: 直会参加権、動画全編視聴</div>
+                    </div>
+
+                    <button class="btn"
+                        style="background:transparent; border:1px solid var(--teal); color:var(--teal); margin-bottom:12px;"
+                        onclick="navigate('discover')">提灯の設置場所を確認 →</button>
+                    <div style="font-size:14px; color:var(--dim);" onclick="navigate('home')">ホームに戻る</div>
+                </div>
+            </div>
+
+            <!-- Screen 7: Notifications -->
+            <div id="screen-notifications" class="screen">
+                <div class="header" style="justify-content:flex-start; gap:16px;">
+                    <div style="font-size:24px; font-weight:900;">通知</div>
+                </div>
+                <div class="filter-chips">
+                    <div class="chip active">すべて</div>
+                    <div class="chip">配当</div>
+                    <div class="chip">監査</div>
+                    <div class="chip">祭り</div>
+                </div>
+
+                <div style="padding-bottom:20px;">
+                    <!-- Item 1 -->
+                    <div class="noti-item unread" onclick="navigate('mypage')">
+                        <div class="noti-scz" style="color:var(--gold);">🎊</div>
+                        <div>
+                            <div style="font-size:11px; color:var(--dim2); margin-bottom:4px;">今日 07:30</div>
+                            <div style="font-size:14px; line-height:1.4;">あなたのランクが<span
+                                    style="font-weight:700; color:var(--gold);">『筆頭氏子』</span>に上がりました。今年の直会では上座が用意されます。
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="noti-item" onclick="navigate('audit-report')">
+                        <div class="noti-scz" style="color:var(--teal);">📊</div>
+                        <div>
+                            <div style="font-size:11px; color:var(--dim2); margin-bottom:4px;">昨日 18:45</div>
+                            <div style="font-size:14px; line-height:1.4;">AI監査完了：八幡宮の透明性スコアが 92→94 に上昇。今年の支出は適正と判定されました。
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="noti-item" onclick="navigate('craftsman-diary')">
+                        <div class="noti-scz" style="color:var(--accent);">🔨</div>
+                        <div>
+                            <div style="font-size:11px; color:var(--dim2); margin-bottom:4px;">2日前 12:00</div>
+                            <div style="font-size:14px; line-height:1.4;">速報：今年の神輿の修復、宮大工の鈴木さんが担当することに決定しました。</div>
+                        </div>
+                    </div>
+
+                    <!-- Item 4 -->
+                    <div class="noti-item" onclick="navigate('festival-detail')">
+                        <div class="noti-scz" style="color:var(--orange);">🔥</div>
+                        <div>
+                            <div style="font-size:11px; color:var(--dim2); margin-bottom:4px;">3日前 09:15</div>
+                            <div style="font-size:14px; line-height:1.4;">秋季例大祭ファンド、目標金額まであと15%！あと¥750,000で目標達成です。</div>
+                        </div>
+                    </div>
+
+                    <!-- Item 5 -->
+                    <div class="noti-item" onclick="navigate('discover')">
+                        <div class="noti-scz" style="color:var(--red);">⚠️</div>
+                        <div>
+                            <div style="font-size:11px; color:var(--dim2); margin-bottom:4px;">5日前 08:00</div>
+                            <div style="font-size:14px; line-height:1.4;">『能登あばれ祭』が絶滅危惧祭りリストに掲載されました。緊急支援ファンドが開設されています。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screen 8: My Page -->
+            <div id="screen-mypage" class="screen">
+                <div class="mypage-header">
+                    <div class="my-avatar-lg"><img
+                            src="https://ui-avatars.com/api/?name=Kenta+Tanaka&background=0D8ABC&color=fff"
+                            alt="Avatar"></div>
+                    <div style="font-size:20px; font-weight:700; margin-bottom:4px;">田中 健太</div>
+                    <div style="font-size:12px; color:var(--dim);">バーチャル氏子 since 2025</div>
+                </div>
+
+                <div class="summary-card" style="margin-top:-20px; background: rgba(22, 22, 80, 0.6);">
+                    <div class="summary-label">総投資額</div>
+                    <div class="summary-amount" style="font-size:28px;">¥156,000</div>
+                    <div class="summary-stats">
+                        <div class="stat-item">支援法人: 4</div>
+                        <div class="stat-item" style="color:var(--gold);">累積体験: 7件</div>
+                    </div>
+                </div>
+
+                <div class="section-title">📿 あなたの氏子ランク</div>
+                <div style="padding-bottom:20px;">
+                    <div class="rank-row" onclick="navigate('rank-detail')">
+                        <div class="rank-icon">⛩️</div>
+                        <div style="flex:1;">
+                            <div style="font-size:14px; font-weight:700;">八幡宮</div>
+                            <div style="font-size:11px; color:var(--dim);">¥85,000</div>
+                        </div>
+                        <div
+                            style="padding:4px 10px; background:rgba(251, 191, 36, 0.15); color:var(--gold); border:1px solid var(--gold); border-radius:8px; font-size:11px; font-weight:700;">
+                            👑 筆頭氏子</div>
+                    </div>
+                    <div class="rank-row">
+                        <div class="rank-icon">⛩️</div>
+                        <div style="flex:1;">
+                            <div style="font-size:14px; font-weight:700;">瑞雲寺</div>
+                            <div style="font-size:11px; color:var(--dim);">¥42,000</div>
+                        </div>
+                        <div
+                            style="padding:4px 10px; background:rgba(192, 192, 192, 0.15); color:#e0e0e0; border:1px solid #c0c0c0; border-radius:8px; font-size:11px; font-weight:700;">
+                            🥈 年行司</div>
+                    </div>
+                    <div class="rank-row">
+                        <div class="rank-icon">🌳</div>
+                        <div style="flex:1;">
+                            <div style="font-size:14px; font-weight:700;">やまもり</div>
+                            <div style="font-size:11px; color:var(--dim);">¥18,000</div>
+                        </div>
+                        <div
+                            style="padding:4px 10px; background:rgba(205, 127, 50, 0.15); color:#cd7f32; border:1px solid #cd7f32; border-radius:8px; font-size:11px; font-weight:700;">
+                            🥉 氏子</div>
+                    </div>
+                </div>
+
+                <div class="section-title">🗓️ 今後の配当予定</div>
+                <div class="carousel">
+                    <div class="matsuri-card"
+                        style="min-width:200px; height:140px; background:linear-gradient(135deg, rgba(251,191,36,0.1), rgba(0,0,0,0)); display:flex; flex-direction:column; padding:16px;">
+                        <div style="font-size:12px; color:var(--gold); margin-bottom:4px;">10月15日 • 八幡宮</div>
+                        <div style="font-weight:700; font-size:16px; margin-bottom:auto;">秋季例大祭</div>
+                        <div style="font-size:11px; color:var(--dim);">桟敷席予約が可能 &gt;</div>
+                    </div>
+                    <div class="matsuri-card"
+                        style="min-width:200px; height:140px; background:linear-gradient(135deg, rgba(34,211,187,0.1), rgba(0,0,0,0)); display:flex; flex-direction:column; padding:16px;">
+                        <div style="font-size:12px; color:var(--teal); margin-bottom:4px;">11月3日 • 瑞雲寺</div>
+                        <div style="font-weight:700; font-size:16px; margin-bottom:auto;">直会 (大宴会)</div>
+                        <div style="font-size:11px; color:var(--dim);">参加チケットあり &gt;</div>
+                    </div>
+                </div>
+
+                <div style="padding: 24px;">
+                    <button class="btn" style="background:transparent; border:1px solid var(--teal); color:var(--teal);"
+                        onclick="navigate('year-wrapped')">2024年のまとめを見る</button>
+                </div>
+            </div>
+
+            <!-- Screen 9: Audit Report -->
+            <div id="screen-audit-report" class="screen">
+                <div class="header">
+                    <div style="font-size:18px; font-weight:700;" onclick="navigate('home', {back:true})">← AI監査レポート
+                    </div>
+                </div>
+
+                <div style="text-align:center; margin-bottom:10px;">
+                    <div style="font-size:12px; color:var(--dim);">八幡宮 — 2024年度 第3四半期</div>
+                </div>
+
+                <div class="audit-gauge-lg">
+                    <svg width="160" height="160" style="transform:rotate(-90deg);">
+                        <circle cx="80" cy="80" r="70" stroke="rgba(255,255,255,0.1)" stroke-width="12" fill="none" />
+                        <circle cx="80" cy="80" r="70" stroke="var(--teal)" stroke-width="12" fill="none"
+                            stroke-dasharray="440" stroke-dashoffset="26"
+                            style="animation: stroke 1.5s ease-out forwards;" />
+                    </svg>
+                    <div style="position:absolute; text-align:center;">
+                        <div style="font-size:14px; color:var(--dim);">総合スコア</div>
+                        <div style="font-size:48px; font-weight:900; color:var(--teal); line-height:1;">94</div>
+                        <div style="font-size:12px; color:var(--dim);">/ 100</div>
+                    </div>
+                </div>
+
+                <div class="audit-grid">
+                    <div class="audit-cell">
+                        <div style="font-size:12px; color:var(--dim);">💰 財務</div>
+                        <div style="font-size:20px; font-weight:700; color:var(--teal);">96</div>
+                    </div>
+                    <div class="audit-cell">
+                        <div style="font-size:12px; color:var(--dim);">🏛️ 施設</div>
+                        <div style="font-size:20px; font-weight:700; color:var(--accent2);">89</div>
+                    </div>
+                    <div class="audit-cell">
+                        <div style="font-size:12px; color:var(--dim);">👥 コミュ</div>
+                        <div style="font-size:20px; font-weight:700; color:var(--green);">97</div>
+                    </div>
+                    <div class="audit-cell">
+                        <div style="font-size:12px; color:var(--dim);">📋 情報</div>
+                        <div style="font-size:20px; font-weight:700; color:var(--teal2);">94</div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin: 0 24px 30px;">
+                    <div style="font-weight:700; margin-bottom:16px;">🏠 ケのスコア (日常活動)</div>
+                    <div style="margin-bottom:12px;">
+                        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                            <span>境内清掃</span>
+                            <span>85%</span>
+                        </div>
+                        <div style="height:6px; background:rgba(255,255,255,0.1); border-radius:3px;">
+                            <div style="width:85%; height:100%; background:var(--teal); border-radius:3px;"></div>
+                        </div>
+                    </div>
+                    <div style="margin-bottom:12px;">
+                        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                            <span>建物維持管理</span>
+                            <span>92%</span>
+                        </div>
+                        <div style="height:6px; background:rgba(255,255,255,0.1); border-radius:3px;">
+                            <div style="width:92%; height:100%; background:var(--teal); border-radius:3px;"></div>
+                        </div>
+                    </div>
+                    <div style="margin-bottom:12px;">
+                        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                            <span>地域交流活動</span>
+                            <span>88%</span>
+                        </div>
+                        <div style="height:6px; background:rgba(255,255,255,0.1); border-radius:3px;">
+                            <div style="width:88%; height:100%; background:var(--accent); border-radius:3px;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                            <span>技術継承活動 ⚠️</span>
+                            <span style="color:var(--orange);">78%</span>
+                        </div>
+                        <div style="height:6px; background:rgba(255,255,255,0.1); border-radius:3px;">
+                            <div style="width:78%; height:100%; background:var(--orange); border-radius:3px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align:center; margin-bottom:40px;">
+                    <div style="font-size:11px; color:var(--dim);">🤖 AI監査エンジン v2.1 自動生成</div>
+                    <div
+                        style="display:inline-block; padding:4px 8px; background:rgba(74, 222, 128, 0.15); color:var(--green); border-radius:4px; font-size:11px; margin-top:8px;">
+                        ✅ 調査NPOによる現地確認済み</div>
+                </div>
+            </div>
+
+            <!-- Screen 10: Craftsman Diary -->
+            <div id="screen-craftsman-diary" class="screen">
+                <div class="header">
+                    <div style="font-size:18px; font-weight:700;" onclick="navigate('home', {back:true})">← 修復プロジェクト
+                    </div>
+                </div>
+
+                <div class="card" style="margin: 0 24px 30px; display:flex; gap:16px;">
+                    <div
+                        style="width:48px; height:48px; border-radius:50%; background:#ccc; background-image:url('https://ui-avatars.com/api/?name=Takumi+Suzuki&background=random'); background-size:cover;">
+                    </div>
+                    <div>
+                        <div style="font-weight:700;">宮大工 鈴木 匠</div>
+                        <div style="font-size:12px; color:var(--dim); margin-bottom:4px;">宮大工歴 35年</div>
+                        <div
+                            style="display:inline-block; padding:2px 6px; background:rgba(251, 191, 36, 0.1); color:var(--gold); border:1px solid var(--gold); border-radius:4px; font-size:10px;">
+                            🏅 伊勢神宮式年遷宮 参加</div>
+                    </div>
+                </div>
+
+                <div class="timeline">
+                    <div class="t-event">
+                        <div class="t-dot"></div>
+                        <div class="t-date">2024.10.20 — Day 35</div>
+                        <div class="t-content">
+                            <div style="margin-bottom:8px; line-height:1.6; font-size:14px;">金箔押し。1枚ずつ、息を止めて。</div>
+                            <div
+                                style="height:120px; background:linear-gradient(135deg, #444, #222); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:32px;">
+                                ✨</div>
+                        </div>
+                    </div>
+                    <div class="t-event">
+                        <div class="t-dot" style="border-color:var(--accent);"></div>
+                        <div class="t-date">2024.10.03 — Day 18</div>
+                        <div class="t-content">
+                            <div style="margin-bottom:8px; line-height:1.6; font-size:14px;">
+                                漆の中塗りが完了。この工程は湿度70%以上でないと定着しない。自然乾燥で2週間待つ。</div>
+                            <div
+                                style="height:120px; background:linear-gradient(135deg, #333, #111); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:32px;">
+                                🥣</div>
+                        </div>
+                    </div>
+                    <div class="t-event">
+                        <div class="t-dot" style="border-color:var(--teal);"></div>
+                        <div class="t-date">2024.09.15 — Day 1</div>
+                        <div class="t-content">
+                            <div style="margin-bottom:8px; line-height:1.6; font-size:14px;">
+                                初日の記録。神輿を分解して内部構造を確認。400年前の檜がまだ生きている。先人の仕事に敬意を感じる瞬間。</div>
+                            <div
+                                style="height:120px; background:linear-gradient(135deg, #5c4033, #3e2723); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:32px;">
+                                🪵</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    style="position:fixed; bottom:0; left:0; width:100%; padding:20px; background:linear-gradient(to top, var(--bg), transparent); pointer-events:none;">
+                    <button class="btn" style="pointer-events:auto; background:var(--teal);"
+                        onclick="alert('鈴木さんへのメッセージフォームが開きます（モック）')">💬 鈴木さんに応援を送る</button>
+                </div>
+            </div>
+
+            <!-- Screen 11: Festival Live -->
+            <div id="screen-festival-live" class="screen"
+                style="background: radial-gradient(circle at 50% 50%, #4a2c0f, #1a0f05);">
+                <!-- Fullscreen Video Placeholder -->
+                <div
+                    style="position:absolute; inset:0; z-index:0; opacity:0.6; background-image:url('https://images.unsplash.com/photo-1544252899-72252a125348?q=80&w=800&fit=crop'); background-size:cover; background-position:center;">
+                </div>
+
+                <div style="position:absolute; top:50px; left:20px; z-index:10; font-size:24px; color:#fff; text-shadow:0 1px 4px rgba(0,0,0,0.8);"
+                    onclick="navigate('home')">✕</div>
+
+                <div style="position:absolute; top:50px; left:0; width:100%; text-align:center; z-index:5;">
+                    <div style="font-size:12px; text-shadow:0 1px 4px rgba(0,0,0,0.8);">八幡宮 秋季例大祭 [2024]</div>
+                    <div style="display:flex; align-items:center; justify-content:center; gap:8px;">
+                        <span
+                            style="background:red; color:white; font-size:10px; padding:2px 6px; border-radius:4px; font-weight:700; animation:pulse 1s infinite;">🔴
+                            LIVE</span>
+                        <span style="font-size:12px; text-shadow:0 1px 4px rgba(0,0,0,0.8);">👁️ 2,847人が視聴中</span>
+                    </div>
+                </div>
+
+                <div class="live-overlay">
+                    <div class="reaction-area" id="live-reaction-area">
+                        <!-- JS will inject floating emojis here -->
+                    </div>
+
+                    <div id="live-chat-area"
+                        style="max-height:120px; overflow:hidden; display:flex; flex-direction:column; justify-content:flex-end;">
+                        <!-- JS will inject chat messages -->
+                    </div>
+
+                    <div style="margin: 12px 20px 20px;">
+                        <div style="margin-bottom:8px; font-size:12px; text-shadow:0 1px 2px #000;">📍 あなたの提灯は東参道に掲出中
+                        </div>
+                        <div style="display:flex; gap:12px;">
+                            <button class="btn"
+                                style="flex:1; padding:12px; font-size:14px; background:rgba(34, 211, 187, 0.9);"
+                                onclick="sendReaction('🎉')">お祝いを送る ¥500</button>
+                            <div style="width:48px; height:48px; background:rgba(255,255,255,0.2); border-radius:12px; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(10px); cursor:pointer;"
+                                onclick="sendReaction('👏')">👏</div>
+                            <div style="width:48px; height:48px; background:rgba(255,255,255,0.2); border-radius:12px; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(10px); cursor:pointer;"
+                                onclick="sendReaction('🔥')">🔥</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screen 12: Year Wrapped -->
+            <div id="screen-year-wrapped" class="screen">
+                <div class="wrapped-container">
+                    <div style="position:absolute; top:40px; right:20px; font-size:24px; cursor:pointer;"
+                        onclick="navigate('home')">✕</div>
+                    <div style="font-family:'serif'; font-size:20px; color:var(--text); margin-top:20px;">✨ 2024年のまとめ
+                    </div>
+
+                    <div style="text-align:center; margin-top:40px; opacity:0; animation:fade 1s forwards;">
+                        <div>あなたは</div>
+                        <div class="wrapped-num">3</div>
+                        <div style="font-size:20px; margin-bottom:10px;">つの祭りを<br>支えました</div>
+                    </div>
+
+                    <div class="card"
+                        style="width:100%; margin-top:30px; border:1px solid var(--gold); background:rgba(251,191,36,0.1); opacity:0; animation:slideUp 0.8s forwards 0.5s;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                            <span>💰 総投資額</span>
+                            <span style="font-weight:700; color:var(--gold);">¥156,000</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                            <span>⛩️ 支援法人</span>
+                            <span style="font-weight:700;">4</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between;">
+                            <span>🎊 参加体験</span>
+                            <span style="font-weight:700;">7件</span>
+                        </div>
+                    </div>
+
+                    <div class="card"
+                        style="width:100%; background:linear-gradient(to right, #4a2c0f, #2a1a4a); opacity:0; animation:slideUp 0.8s forwards 1s;">
+                        <div style="font-size:14px; line-height:1.6;">あなたの投資で修復された神輿は、来年の秋季例大祭で再び担がれます。</div>
+                        <div
+                            style="height:100px; margin-top:12px; background:url('https://images.unsplash.com/photo-1544252899-72252a125348?q=80&w=400&fit=crop'); background-size:cover; border-radius:8px;">
+                        </div>
+                    </div>
+
+                    <div style="margin-top:auto; width:100%; text-align:center;">
+                        <div style="font-size:12px; color:var(--dim); margin-bottom:12px;">この1年をシェア</div>
+                        <div
+                            style="display:flex; justify-content:center; gap:20px; font-size:24px; margin-bottom:20px;">
+                            <span>🐦</span> <span>📷</span> <span>💬</span>
+                        </div>
+                        <button class="btn" style="background:linear-gradient(to right, var(--gold), var(--orange));"
+                            onclick="navigate('home')">2025年も文化を守る →</button>
+                    </div>
+
+                    <!-- Confetti injected via JS -->
+                    <div id="confetti-container" style="position:absolute; inset:0; pointer-events:none;"></div>
+                </div>
+            </div>
+
+            <!-- Screen 13: Rank Detail -->
+            <div id="screen-rank-detail" class="screen">
+                <div class="header">
+                    <div style="font-size:18px; font-weight:700;" onclick="navigate('festival-detail', {back:true})">←
+                        氏子ランク制度</div>
+                </div>
+
+                <div style="text-align:center; padding:20px;">
+                    <div style="font-size:40px; margin-bottom:4px; filter: drop-shadow(0 0 20px rgba(251,191,36,0.6));">
+                        👑</div>
+                    <div style="font-size:20px; font-weight:900; color:var(--gold);">筆頭氏子</div>
+                    <div style="font-size:12px; color:var(--dim);">（総代クラス）</div>
+                </div>
+
+                <div style="padding:0 24px;">
+                    <div style="display:flex; align-items:center; margin-bottom:8px; gap:8px;">
+                        <div style="width:30px; font-size:10px; color:var(--dim); text-align:right;">次へ</div>
+                        <div style="flex:1; height:8px; background:rgba(255,255,255,0.1); border-radius:4px;">
+                            <div style="width:17%; height:100%; background:var(--gold); border-radius:4px;"></div>
+                        </div>
+                        <div style="font-size:10px; color:var(--dim);">あと ¥415,001</div>
+                    </div>
+                    <div style="text-align:right; font-size:10px; color:var(--dim); margin-bottom:30px;">+ 3年以上の継続が必要です
+                    </div>
+
+                    <div class="section-title">あなたの権利</div>
+                    <div class="card">
+                        <div style="display:flex; gap:12px; margin-bottom:12px;"> <span
+                                style="color:var(--green);">✅</span>
+                            <div>名入り提灯</div>
+                        </div>
+                        <div style="display:flex; gap:12px; margin-bottom:12px;"> <span
+                                style="color:var(--green);">✅</span>
+                            <div>神輿担ぎ抽選権</div>
+                        </div>
+                        <div style="display:flex; gap:12px; margin-bottom:12px;"> <span
+                                style="color:var(--green);">✅</span>
+                            <div>直会参加権</div>
+                        </div>
+                        <div style="display:flex; gap:12px; margin-bottom:12px;"> <span
+                                style="color:var(--green);">✅</span>
+                            <div>修復動画全編閲覧</div>
+                        </div>
+                        <div style="display:flex; gap:12px; margin-bottom:12px;"> <span
+                                style="color:var(--green);">✅</span>
+                            <div>AI監査レポート閲覧</div>
+                        </div>
+                        <div style="display:flex; gap:12px; margin-bottom:12px; opacity:0.5;"> <span
+                                style="color:var(--dim);">🔒</span>
+                            <div>運営会議オブザーバー権 (総代)</div>
+                        </div>
+                        <div style="display:flex; gap:12px; opacity:0.5;"> <span style="color:var(--dim);">🔒</span>
+                            <div>宮司との直接対話 (総代)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="tab-bar">
+            <div class="tab-item active" onclick="navigate('home')">
+                <div class="tab-icon">🏠</div>
+                <span>ホーム</span>
+            </div>
+            <div class="tab-item" onclick="navigate('discover')">
+                <div class="tab-icon">🔍</div>
+                <span>探す</span>
+            </div>
+            <div class="tab-item" onclick="navigate('festival-detail')">
+                <div class="tab-icon">💰</div>
+                <span>投資</span>
+            </div>
+            <div class="tab-item" onclick="navigate('notifications')">
+                <div class="tab-icon" style="position:relative;">🔔<div
+                        style="position:absolute;top:0;right:-2px;width:8px;height:8px;background:var(--red);border-radius:50%;">
+                    </div>
+                </div>
+                <span>通知</span>
+            </div>
+            <div class="tab-item" onclick="navigate('mypage')">
+                <div class="tab-icon">👤</div>
+                <span>マイ</span>
+            </div>
+        </div>
+
+        <div class="home-indicator"></div>
+    </div>
+
+    <script>
+        // Navigation Logic
+        const navStack = ['onboarding'];
+
+        function navigate(screenId, options = {}) {
+            console.log('Navigating to:', screenId);
+
+            const currentScreen = document.querySelector('.screen.active');
+            const targetScreen = document.getElementById('screen-' + screenId);
+
+            if (!targetScreen) return;
+
+            // Transition Effect
+            if (options.back) {
+                targetScreen.style.transform = 'scale(0.9)';
+                targetScreen.style.opacity = '0';
+                targetScreen.classList.add('active');
+
+                setTimeout(() => {
+                    targetScreen.style.transform = 'scale(1)';
+                    targetScreen.style.opacity = '1';
+                    currentScreen.style.transform = 'translateX(100%)';
+                    currentScreen.classList.remove('active');
+                    setTimeout(() => { currentScreen.style.transform = ''; }, 300);
+                }, 10);
+            } else {
+                targetScreen.style.transform = 'translateX(100%)';
+                targetScreen.classList.add('active');
+
+                setTimeout(() => {
+                    targetScreen.style.transform = 'translateX(0)';
+                    currentScreen.style.transform = 'scale(0.9)';
+                    currentScreen.style.opacity = '0';
+
+                    setTimeout(() => {
+                        currentScreen.classList.remove('active');
+                        currentScreen.style.transform = '';
+                        currentScreen.style.opacity = '';
+                    }, 300);
+                }, 10);
+            }
+
+            // Update Tab Bar
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            if (screenId === 'home') document.querySelectorAll('.tab-item')[0].classList.add('active');
+            if (screenId === 'discover') document.querySelectorAll('.tab-item')[1].classList.add('active');
+            if (screenId === 'festival-detail') document.querySelectorAll('.tab-item')[2].classList.add('active');
+            if (screenId === 'notifications') document.querySelectorAll('.tab-item')[3].classList.add('active');
+            if (screenId === 'mypage') document.querySelectorAll('.tab-item')[4].classList.add('active');
+
+            // Hide tab bar for specific screens
+            const hideTabs = ['onboarding', 'invest-flow', 'invest-complete', 'festival-live', 'year-wrapped', 'craftsman-diary', 'audit-report', 'rank-detail'];
+            const tabBar = document.querySelector('.tab-bar');
+            if (hideTabs.includes(screenId)) {
+                tabBar.style.transform = 'translateY(100%)';
+            } else {
+                tabBar.style.display = 'flex';
+                setTimeout(() => tabBar.style.transform = 'translateY(0)', 100);
+            }
+
+            // Special actions
+            if (screenId === 'year-wrapped') startConfetti();
+            if (screenId === 'festival-live') startLiveChat();
+        }
+
+        // Onboarding Slider
+        function setSlide(index) {
+            document.querySelectorAll('.onboarding-slide').forEach(s => s.classList.remove('active'));
+            document.getElementById('slide-' + index).classList.add('active');
+
+            document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
+            document.querySelectorAll('.dot')[index - 1].classList.add('active');
+        }
+
+        // Invest Flow
+        function setAmount(amount) {
+            document.getElementById('invest-amount').innerText = '¥ ' + amount.toLocaleString();
+            document.querySelectorAll('.amount-opt').forEach(opt => {
+                opt.classList.remove('active');
+                if (opt.innerText.includes(amount.toLocaleString())) opt.classList.add('active');
+            });
+        }
+
+        // Live Reactions
+        function sendReaction(emoji) {
+            const area = document.getElementById('live-reaction-area');
+            const el = document.createElement('div');
+            el.innerText = emoji;
+            el.className = 'floating-emoji';
+            el.style.left = Math.random() * 80 + 10 + '%';
+            // Randomize animation duration slightly
+            el.style.animationDuration = (1.5 + Math.random()) + 's';
+            area.appendChild(el);
+            setTimeout(() => el.remove(), 3000);
+        }
+
+        let chatInterval;
+        function startLiveChat() {
+            if (chatInterval) clearInterval(chatInterval);
+            const area = document.getElementById('live-chat-area');
+            area.innerHTML = '';
+            const messages = [
+                "わっしょい！", "提灯きれい！", "神輿すごい迫力ですね", "鈴木さん頑張って！",
+                "おひねり投げました！", "現地行きたかった...", "500円送りました", "歴史を感じる"
+            ];
+
+            chatInterval = setInterval(() => {
+                const msg = messages[Math.floor(Math.random() * messages.length)];
+                const div = document.createElement('div');
+                div.className = 'chat-msg';
+                div.innerText = msg;
+                area.appendChild(div);
+                if (area.children.length > 5) area.removeChild(area.firstChild);
+            }, 1500);
+        }
+
+        // Confetti
+        function startConfetti() {
+            const container = document.getElementById('confetti-container');
+            container.innerHTML = '';
+            const colors = ['#fbbf24', '#22d3bb', '#f472b6', '#ffffff'];
+
+            for (let i = 0; i < 50; i++) {
+                const conf = document.createElement('div');
+                conf.className = 'confetti';
+                conf.style.left = Math.random() * 100 + '%';
+                conf.style.top = -10 + 'px';
+                conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                conf.style.animationDuration = (2 + Math.random() * 2) + 's';
+                conf.style.animationDelay = (Math.random() * 3) + 's';
+                container.appendChild(conf);
+            }
+        }
+
+        // Auto slide for onboarding (optional, maybe distracting)
+        // setInterval(() => {
+        //    if(document.getElementById('screen-onboarding').classList.contains('active')) {
+        //        // logic to cycle
+        //    }
+        // }, 5000);
+
+    </script>
+
+</body>
+
+</html>

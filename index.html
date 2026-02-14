@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>NPOファンド — 市場原理とAI監査による公益活動の新しいかたち</title>
+    <meta name="description" content="課税か保護かの二項対立を超え、透明性と市場原理で公益活動を持続可能にする新しい仕組み">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@200;300;400;500;600;700;900&family=Inter:wght@300;400;500;600;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        :root {
+            --bg: #07071a;
+            --bg2: #0c0c28;
+            --surface: #14143a;
+            /* Polished */
+            --card: #1a1a55;
+            --accent: #7c6cf0;
+            --accent2: #a89afe;
+            --teal: #22d3bb;
+            --teal2: #5eead4;
+            --pink: #f472b6;
+            --orange: #fb923c;
+            --red: #f87171;
+            --green: #4ade80;
+            --text: #f0f0fa;
+            /* Brighter */
+            --dim: #9494c0;
+            /* Better contrast */
+            --dim2: #6b6b95;
+            --glass: rgba(30, 30, 90, .45);
+            --glass-border: rgba(255, 255, 255, .1);
+            --max-w: 1200px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) var(--bg)
+        }
+
+        body {
+            font-family: 'Noto Sans JP', 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.7
+        }
+
+        ::selection {
+            background: var(--accent);
+            color: #fff
+        }
+
+        /* ===== UTILITY ===== */
+        .container {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 0 32px
+        }
+
+        section {
+            padding: 140px 0;
+            position: relative
+        }
+
+        .section-label {
+            text-transform: uppercase;
+            font-size: .75rem;
+            letter-spacing: 4px;
+            color: var(--teal);
+            font-weight: 600;
+            margin-bottom: 12px
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 900;
+            line-height: 1.25;
+            margin-bottom: 20px
+        }
+
+        .section-desc {
+            font-size: 1.1rem;
+            color: var(--dim);
+            max-width: 640px;
+            line-height: 1.8
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--accent2), var(--teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text
+        }
+
+        .teal-text {
+            color: var(--teal)
+        }
+
+        .pink-text {
+            color: var(--pink)
+        }
+
+        /* scroll reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity .8s cubic-bezier(.16, 1, .3, 1), transform .8s cubic-bezier(.16, 1, .3, 1)
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        .reveal-delay-1 {
+            transition-delay: .1s
+        }
+
+        .reveal-delay-2 {
+            transition-delay: .2s
+        }
+
+        .reveal-delay-3 {
+            transition-delay: .3s
+        }
+
+        .reveal-delay-4 {
+            transition-delay: .4s
+        }
+
+        /* ===== NAV ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 20px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background .3s, backdrop-filter .3s
+        }
+
+        nav.scrolled {
+            background: rgba(7, 7, 26, .85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border)
+        }
+
+        .nav-logo {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 1px
+        }
+
+        .nav-logo span {
+            color: var(--teal)
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none
+        }
+
+        .nav-links a {
+            color: var(--dim);
+            text-decoration: none;
+            font-size: .85rem;
+            font-weight: 400;
+            transition: color .3s;
+            letter-spacing: .5px
+        }
+
+        .nav-links a:hover {
+            color: var(--text)
+        }
+
+        /* ===== HERO ===== */
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden
+        }
+
+        #hero canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 18px;
+            border-radius: 100px;
+            background: rgba(124, 108, 240, .12);
+            border: 1px solid rgba(124, 108, 240, .25);
+            font-size: .8rem;
+            color: var(--accent2);
+            margin-bottom: 28px
+        }
+
+        .hero-badge .pulse {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--teal);
+            animation: pulse 2s infinite
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(34, 211, 187, .6)
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(34, 211, 187, 0)
+            }
+        }
+
+        .hero-title {
+            font-size: clamp(2.8rem, 6vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.15;
+            margin-bottom: 24px;
+            letter-spacing: -1px
+        }
+
+        .hero-sub {
+            font-size: clamp(1.05rem, 2vw, 1.25rem);
+            color: var(--dim);
+            max-width: 600px;
+            margin-bottom: 40px;
+            font-weight: 300;
+            line-height: 1.9
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 36px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent), #5b4cd4);
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: .95rem;
+            transition: transform .3s, box-shadow .3s;
+            border: none;
+            cursor: pointer
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(124, 108, 240, .35)
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 48px;
+            margin-top: 56px;
+            padding-top: 40px;
+            border-top: 1px solid var(--glass-border)
+        }
+
+        .hero-stat .num {
+            font-size: 2.2rem;
+            font-weight: 900
+        }
+
+        .hero-stat .label {
+            font-size: .8rem;
+            color: var(--dim);
+            margin-top: 2px
+        }
+
+        .hero-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: .15;
+            pointer-events: none
+        }
+
+        .hero-glow-1 {
+            top: -200px;
+            right: -100px;
+            background: var(--accent)
+        }
+
+        .hero-glow-2 {
+            bottom: -300px;
+            left: -200px;
+            background: var(--teal)
+        }
+
+        /* ===== PROBLEM ===== */
+        #problem {
+            background: var(--bg2)
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-top: 48px
+        }
+
+        .problem-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid var(--glass-border);
+            position: relative;
+            overflow: hidden;
+            transition: border-color .3s, transform .3s
+        }
+
+        .problem-card:hover {
+            border-color: var(--red);
+            transform: translateY(-4px)
+        }
+
+        .problem-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--red), var(--orange));
+            opacity: 0;
+            transition: opacity .3s
+        }
+
+        .problem-card:hover::before {
+            opacity: 1
+        }
+
+        .problem-icon {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            display: block
+        }
+
+        .problem-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px
+        }
+
+        .problem-card p {
+            font-size: .9rem;
+            color: var(--dim);
+            line-height: 1.7
+        }
+
+        /* ===== SOLUTION ===== */
+        #solution {
+            text-align: center;
+            overflow: hidden
+        }
+
+        .solution-statement {
+            font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+            font-weight: 900;
+            line-height: 1.4;
+            max-width: 800px;
+            margin: 0 auto 48px
+        }
+
+        .solution-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-bottom: 56px
+        }
+
+        .solution-node {
+            background: var(--surface);
+            border-radius: 14px;
+            padding: 20px 32px;
+            border: 1px solid var(--glass-border);
+            text-align: center;
+            transition: .3s
+        }
+
+        .solution-node.active {
+            border-color: var(--teal);
+            background: rgba(34, 211, 187, .06);
+            box-shadow: 0 0 30px rgba(34, 211, 187, .1)
+        }
+
+        .solution-node h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 4px
+        }
+
+        .solution-node p {
+            font-size: .8rem;
+            color: var(--dim)
+        }
+
+        .solution-arrow {
+            font-size: 1.4rem;
+            color: var(--teal)
+        }
+
+        /* ===== PILLARS ===== */
+        #pillars .pillar-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 48px
+        }
+
+        .pillar {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 40px 32px;
+            border: 1px solid var(--glass-border);
+            position: relative;
+            overflow: hidden;
+            transition: transform .4s, border-color .3s
+        }
+
+        .pillar:hover {
+            transform: translateY(-6px)
+        }
+
+        .pillar:nth-child(1):hover {
+            border-color: var(--teal)
+        }
+
+        .pillar:nth-child(2):hover {
+            border-color: var(--accent2)
+        }
+
+        .pillar:nth-child(3):hover {
+            border-color: var(--orange)
+        }
+
+        .pillar .pillar-num {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            font-size: 4rem;
+            font-weight: 900;
+            opacity: .06;
+            line-height: 1
+        }
+
+        .pillar .pillar-icon {
+            font-size: 2.4rem;
+            margin-bottom: 20px;
+            display: block
+        }
+
+        .pillar h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 8px
+        }
+
+        .pillar .pillar-tag {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 8px;
+            font-size: .7rem;
+            font-weight: 600;
+            margin-bottom: 16px
+        }
+
+        .pillar:nth-child(1) .pillar-tag {
+            background: rgba(34, 211, 187, .12);
+            color: var(--teal)
+        }
+
+        .pillar:nth-child(2) .pillar-tag {
+            background: rgba(124, 108, 240, .12);
+            color: var(--accent2)
+        }
+
+        .pillar:nth-child(3) .pillar-tag {
+            background: rgba(251, 146, 60, .12);
+            color: var(--orange)
+        }
+
+        .pillar p {
+            font-size: .9rem;
+            color: var(--dim);
+            line-height: 1.7
+        }
+
+        .pillar ul {
+            list-style: none;
+            margin-top: 16px
+        }
+
+        .pillar ul li {
+            font-size: .85rem;
+            color: var(--dim);
+            padding: 5px 0 5px 20px;
+            position: relative
+        }
+
+        .pillar ul li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--teal);
+            font-size: .8rem
+        }
+
+        /* ===== FUND ===== */
+        #fund {
+            background: var(--bg2)
+        }
+
+        .fund-visual {
+            display: flex;
+            gap: 24px;
+            margin-top: 48px;
+            align-items: stretch
+        }
+
+        .fund-bar-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px
+        }
+
+        .fund-bar {
+            border-radius: 16px;
+            padding: 28px;
+            position: relative;
+            overflow: hidden;
+            transition: transform .3s
+        }
+
+        .fund-bar:hover {
+            transform: scale(1.02)
+        }
+
+        .fund-bar.base {
+            background: linear-gradient(135deg, rgba(168, 154, 254, .1), rgba(168, 154, 254, .02));
+            border: 1px solid rgba(168, 154, 254, .15);
+            flex: 3
+        }
+
+        .fund-bar.market {
+            background: linear-gradient(135deg, rgba(34, 211, 187, .1), rgba(34, 211, 187, .02));
+            border: 1px solid rgba(34, 211, 187, .15);
+            flex: 6
+        }
+
+        .fund-bar.research {
+            background: linear-gradient(135deg, rgba(251, 146, 60, .1), rgba(251, 146, 60, .02));
+            border: 1px solid rgba(251, 146, 60, .15);
+            flex: 1
+        }
+
+        .fund-bar .pct {
+            font-size: 2.4rem;
+            font-weight: 900;
+            line-height: 1
+        }
+
+        .fund-bar.base .pct {
+            color: var(--accent2)
+        }
+
+        .fund-bar.market .pct {
+            color: var(--teal)
+        }
+
+        .fund-bar.research .pct {
+            color: var(--orange)
+        }
+
+        .fund-bar h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 8px 0 6px
+        }
+
+        .fund-bar p {
+            font-size: .85rem;
+            color: var(--dim);
+            line-height: 1.6
+        }
+
+        .fund-detail {
+            flex: 1;
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            justify-content: center
+        }
+
+        .fund-detail h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--accent2)
+        }
+
+        .fund-compare {
+            list-style: none
+        }
+
+        .fund-compare li {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--glass-border);
+            font-size: .88rem
+        }
+
+        .fund-compare .old {
+            color: var(--dim);
+            text-decoration: line-through;
+            opacity: .6
+        }
+
+        .fund-compare .new {
+            color: var(--teal);
+            font-weight: 500
+        }
+
+        /* ===== DEFENSE ===== */
+        #defense .defense-lines {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin-top: 48px;
+            max-width: 800px;
+            position: relative
+        }
+
+        #defense .defense-lines::before {
+            content: '';
+            position: absolute;
+            left: 32px;
+            top: 60px;
+            bottom: 60px;
+            width: 2px;
+            background: linear-gradient(180deg, var(--teal), var(--accent), var(--orange))
+        }
+
+        .defense-line {
+            display: flex;
+            gap: 24px;
+            padding: 24px 0;
+            align-items: flex-start;
+            position: relative
+        }
+
+        .defense-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 4px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .7rem;
+            color: #fff;
+            font-weight: 700;
+            margin-left: 20px
+        }
+
+        .defense-line:nth-child(1) .defense-dot {
+            background: var(--teal)
+        }
+
+        .defense-line:nth-child(2) .defense-dot {
+            background: var(--accent)
+        }
+
+        .defense-line:nth-child(3) .defense-dot {
+            background: var(--orange)
+        }
+
+        .defense-content {
+            background: var(--surface);
+            border-radius: 14px;
+            padding: 24px;
+            border: 1px solid var(--glass-border);
+            flex: 1;
+            transition: border-color .3s
+        }
+
+        .defense-line:nth-child(1) .defense-content:hover {
+            border-color: var(--teal)
+        }
+
+        .defense-line:nth-child(2) .defense-content:hover {
+            border-color: var(--accent)
+        }
+
+        .defense-line:nth-child(3) .defense-content:hover {
+            border-color: var(--orange)
+        }
+
+        .defense-content h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 6px
+        }
+
+        .defense-content p {
+            font-size: .88rem;
+            color: var(--dim);
+            line-height: 1.6
+        }
+
+        .defense-connector {
+            text-align: center;
+            padding: 4px 0 4px 32px;
+            font-size: .8rem;
+            color: var(--dim2);
+            position: relative
+        }
+
+        /* ===== SCENARIO ===== */
+        #scenario {
+            background: var(--bg2)
+        }
+
+        .scenario-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 32px;
+            margin-top: 48px;
+            flex-wrap: wrap
+        }
+
+        .scenario-tab {
+            padding: 8px 20px;
+            border-radius: 10px;
+            background: var(--surface);
+            border: 1px solid var(--glass-border);
+            color: var(--dim);
+            font-size: .85rem;
+            cursor: pointer;
+            transition: .3s
+        }
+
+        .scenario-tab.active {
+            background: rgba(34, 211, 187, .1);
+            border-color: var(--teal);
+            color: var(--teal)
+        }
+
+        .scenario-panel {
+            display: none;
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid var(--glass-border)
+        }
+
+        .scenario-panel.active {
+            display: block
+        }
+
+        .scenario-steps {
+            list-style: none;
+            counter-reset: step
+        }
+
+        .scenario-steps li {
+            counter-increment: step;
+            padding: 12px 0 12px 48px;
+            position: relative;
+            font-size: .95rem;
+            color: var(--dim);
+            line-height: 1.7;
+            border-left: 2px solid var(--glass-border);
+            margin-left: 12px
+        }
+
+        .scenario-steps li::before {
+            content: counter(step);
+            position: absolute;
+            left: -14px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--card);
+            border: 2px solid var(--teal);
+            color: var(--teal);
+            font-size: .75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .scenario-result {
+            margin-top: 20px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: .95rem
+        }
+
+        .scenario-result.good {
+            background: rgba(74, 222, 128, .08);
+            color: var(--green);
+            border-left: 3px solid var(--green)
+        }
+
+        .scenario-result.warn {
+            background: rgba(251, 146, 60, .08);
+            color: var(--orange);
+            border-left: 3px solid var(--orange)
+        }
+
+        /* ===== ROADMAP ===== */
+        #roadmap .road-track {
+            display: flex;
+            gap: 0;
+            margin-top: 56px;
+            position: relative
+        }
+
+        #roadmap .road-track::before {
+            content: '';
+            position: absolute;
+            top: 48px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--teal), var(--green))
+        }
+
+        .road-phase {
+            flex: 1;
+            padding-top: 72px;
+            position: relative;
+            text-align: center
+        }
+
+        .road-phase::before {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            transform: translateX(-50%);
+            background: var(--bg);
+            border: 3px solid var(--accent);
+            z-index: 1;
+            transition: .3s
+        }
+
+        .road-phase:hover::before {
+            background: var(--accent);
+            box-shadow: 0 0 20px rgba(124, 108, 240, .5)
+        }
+
+        .road-phase h3 {
+            font-size: .95rem;
+            font-weight: 700;
+            margin-bottom: 4px
+        }
+
+        .road-phase .phase-period {
+            font-size: .75rem;
+            color: var(--dim2);
+            margin-bottom: 12px;
+            display: block
+        }
+
+        .road-phase p {
+            font-size: .8rem;
+            color: var(--dim);
+            line-height: 1.6;
+            padding: 0 8px
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            padding: 80px 0;
+            border-top: 1px solid var(--glass-border);
+            text-align: center
+        }
+
+        footer .footer-title {
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+            font-weight: 900;
+            margin-bottom: 16px
+        }
+
+        footer p {
+            color: var(--dim);
+            font-size: .95rem;
+            margin-bottom: 32px
+        }
+
+        footer .footer-links {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap
+        }
+
+        footer .footer-links a {
+            color: var(--dim);
+            text-decoration: none;
+            font-size: .85rem;
+            transition: color .3s
+        }
+
+        footer .footer-links a:hover {
+            color: var(--accent2)
+        }
+
+        .footer-copy {
+            margin-top: 48px;
+            font-size: .75rem;
+            color: var(--dim2)
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media(max-width:900px) {
+            section {
+                padding: 100px 0
+            }
+
+            #pillars .pillar-grid {
+                grid-template-columns: 1fr
+            }
+
+            .fund-visual {
+                flex-direction: column
+            }
+
+            .hero-stats {
+                flex-wrap: wrap;
+                gap: 24px
+            }
+
+            .nav-links {
+                display: none
+            }
+
+            #roadmap .road-track {
+                flex-direction: column;
+                gap: 24px
+            }
+
+            #roadmap .road-track::before {
+                display: none
+            }
+
+            .road-phase {
+                padding-top: 0;
+                text-align: left;
+                padding-left: 40px
+            }
+
+            .road-phase::before {
+                left: 0;
+                top: 4px
+            }
+
+            .solution-flow {
+                flex-direction: column
+            }
+
+            .solution-arrow {
+                transform: rotate(90deg)
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAV -->
+    <nav id="nav">
+        <div class="nav-logo">NPO<span>ファンド</span></div>
+        <ul class="nav-links">
+            <li><a href="#problem">課題</a></li>
+            <li><a href="#solution">提案</a></li>
+            <li><a href="#pillars">3つの柱</a></li>
+            <li><a href="#fund">資金構造</a></li>
+            <li><a href="#defense">防御ライン</a></li>
+            <li><a href="#roadmap">ロードマップ</a></li>
+        </ul>
+    </nav>
+
+    <!-- HERO -->
+    <section id="hero">
+        <canvas id="particles"></canvas>
+        <div class="hero-glow hero-glow-1"></div>
+        <div class="hero-glow hero-glow-2"></div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge reveal"><span class="pulse"></span> Concept Draft v0.2</div>
+                <h1 class="hero-title reveal reveal-delay-1">祭り・文化財を、<br><span class="gradient-text">あなたの手で守る。</span>
+                </h1>
+                <p class="hero-sub reveal reveal-delay-2">資金不足で消えゆく日本の文化を、投資で直接支援。<br>寄付ではなく、あなたも「運営者」の一人になれる新しい仕組み。</p>
+                <a href="./app_mockup.html" class="hero-cta reveal reveal-delay-3" target="_blank">アプリデモを試す →</a>
+                <div class="hero-stats reveal reveal-delay-4">
+                    <div class="hero-stat">
+                        <div class="num gradient-text" data-count="180000">0</div>
+                        <div class="label">日本のNPO法人数</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="num teal-text" data-count="181000">0</div>
+                        <div class="label">宗教法人数</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="num pink-text">300+</div>
+                        <div class="label">絶滅危惧の祭り</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROBLEM -->
+    <section id="problem">
+        <div class="container">
+            <div class="section-label reveal">Problem</div>
+            <h2 class="section-title reveal">今、何が起きているのか</h2>
+            <p class="section-desc reveal">数千年の歴史を持つ宗教法人と、地域を支えるNPO。その両方が、制度と時代の狭間で揺れている。</p>
+            <div class="problem-grid">
+                <div class="problem-card reveal">
+                    <span class="problem-icon">⛩️</span>
+                    <h3>宗教法人の制度悪用</h3>
+                    <p>非課税の仕組みを利用した外国人への売却、マネーロンダリング、ペーパーカンパニー化。善良な法人が割を食う構造。</p>
+                </div>
+                <div class="problem-card reveal reveal-delay-1">
+                    <span class="problem-icon">💔</span>
+                    <h3>一律課税の副作用</h3>
+                    <p>寄付金に課税すれば不正は減る。だが公園整備、河川保全、地域福祉など「お金にならない善意の活動」が壊滅する。</p>
+                </div>
+                <div class="problem-card reveal reveal-delay-2">
+                    <span class="problem-icon">📋</span>
+                    <h3>補助金制度の限界</h3>
+                    <p>書類が良ければ通る。政治的コネクションが影響する。成果検証は形式的。制度が現実に追いついていない。</p>
+                </div>
+                <div class="problem-card reveal reveal-delay-3">
+                    <span class="problem-icon">👴</span>
+                    <h3>小さな政府への移行</h3>
+                    <p>少子高齢化で行政リソースは縮小の一途。補助金の審査も監査も、人手で続けることが構造的に不可能になりつつある。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SOLUTION -->
+    <section id="solution">
+        <div class="container" style="text-align:center">
+            <div class="section-label reveal">Solution</div>
+            <div class="solution-statement reveal">
+                「課税か保護か」の先にある<br><span class="gradient-text">第三の道</span>
+            </div>
+            <p class="section-desc reveal" style="margin:0 auto 48px;text-align:center">
+                世の中にどれだけ必要とされているかを、市場に聞く。<br>AIが透明性を担保し、人間が現実を検証する。</p>
+            <div class="solution-flow reveal">
+                <div class="solution-node">
+                    <h3>従来モデル</h3>
+                    <p>行政が判断 → 補助金</p>
+                </div>
+                <div class="solution-arrow">→</div>
+                <div class="solution-node active">
+                    <h3>NPOファンド</h3>
+                    <p>市場原理 × AI監査</p>
+                </div>
+                <div class="solution-arrow">←</div>
+                <div class="solution-node">
+                    <h3>市民参加</h3>
+                    <p>誰でも小額から投資</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3 PILLARS -->
+    <section id="pillars">
+        <div class="container">
+            <div class="section-label reveal">Core Innovation</div>
+            <h2 class="section-title reveal">3つの柱</h2>
+            <p class="section-desc reveal">テクノロジーと人間の力を組み合わせた、新しいエコシステム。</p>
+            <div class="pillar-grid">
+                <div class="pillar reveal">
+                    <div class="pillar-num">01</div>
+                    <span class="pillar-icon">🤖</span>
+                    <span class="pillar-tag">TRUST</span>
+                    <h3>AIが透明性を保証</h3>
+                    <p>あなたのお金がどう使われたか、AIが24時間体制でチェック。確実な「透明性」を約束します。</p>
+                    <ul>
+                        <li>リアルタイムな資金追跡</li>
+                        <li>わかりやすい活動レポート</li>
+                        <li>怪しい動きを即座に検知</li>
+                    </ul>
+                </div>
+                <div class="pillar reveal reveal-delay-1">
+                    <div class="pillar-num">02</div>
+                    <span class="pillar-icon">📈</span>
+                    <span class="pillar-tag">INVEST</span>
+                    <h3>応援が資金になる</h3>
+                    <p>単なる寄付ではありません。成果を出す団体には、より多くの資金が集まる「市場」を作ります。</p>
+                    <ul>
+                        <li>小額から投資可能</li>
+                        <li>成果に応じたリターン</li>
+                        <li>税制優遇でメリットも</li>
+                    </ul>
+                </div>
+                <div class="pillar reveal reveal-delay-2">
+                    <div class="pillar-num">03</div>
+                    <span class="pillar-icon">🔍</span>
+                    <span class="pillar-tag">REALITY</span>
+                    <h3>現地で実態を調査</h3>
+                    <p>データに出てこない「現場の熱量」や「実際の活動」は、プロの調査員が現地で確認します。</p>
+                    <ul>
+                        <li>専門家による現地視察</li>
+                        <li>受益者の声を直接収集</li>
+                        <li>不正があれば即座に報告</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FUND STRUCTURE -->
+    <section id="fund">
+        <div class="container">
+            <div class="section-label reveal">Fund Design</div>
+            <h2 class="section-title reveal">ハイブリッド資金配分</h2>
+            <p class="section-desc reveal">最低保障と市場原理の共存。地味な活動も、成果を出す活動も、正当に扱われる設計。</p>
+            <div class="fund-visual reveal">
+                <div class="fund-bar-wrap">
+                    <div class="fund-bar market">
+                        <div class="pct">60%</div>
+                        <h3>マーケットファンド</h3>
+                        <p>市場の評価に連動する変動枠。成果を出し、人々に必要とされている活動により多くの資金が集まる。</p>
+                    </div>
+                    <div class="fund-bar base">
+                        <div class="pct">30%</div>
+                        <h3>ベースファンド</h3>
+                        <p>全認定組織への最低保障。河川保全のような「地味だが不可欠な活動」を守る安全網。</p>
+                    </div>
+                    <div class="fund-bar research">
+                        <div class="pct">10%</div>
+                        <h3>調査ファンド</h3>
+                        <p>市場の免疫系。調査NPOの活動資金と報奨金。</p>
+                    </div>
+                </div>
+                <div class="fund-detail">
+                    <h3>従来モデルとの比較</h3>
+                    <ul class="fund-compare">
+                        <li><span class="old">年次の書類審査</span><span class="new">→ AI常時監査</span></li>
+                        <li><span class="old">行政が配分を決定</span><span class="new">→ 市場が評価</span></li>
+                        <li><span class="old">成果検証が形式的</span><span class="new">→ インパクト定量化</span></li>
+                        <li><span class="old">不正は事後発覚</span><span class="new">→ 予兆検知</span></li>
+                        <li><span class="old">大口のみ参加</span><span class="new">→ 小額から参加OK</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DEFENSE -->
+    <section id="defense">
+        <div class="container">
+            <div class="section-label reveal">Security</div>
+            <h2 class="section-title reveal">三重の防御ライン</h2>
+            <p class="section-desc reveal">不正を検知し、検証し、処分する。三段階の仕組みで市場の健全性を維持。</p>
+            <div class="defense-lines">
+                <div class="defense-line reveal">
+                    <div class="defense-dot">1</div>
+                    <div class="defense-content">
+                        <h3 style="color:var(--teal)">AI監査エンジン — 常時・自動</h3>
+                        <p>財務データの異常検知、支出パターンの逸脱、データ整合性チェック。24時間365日、すべての参加組織を横断的に分析。</p>
+                    </div>
+                </div>
+                <div class="defense-connector reveal">↓ 異常検知時にアラート発出</div>
+                <div class="defense-line reveal">
+                    <div class="defense-dot">2</div>
+                    <div class="defense-content">
+                        <h3 style="color:var(--accent2)">調査NPO / バウンティハンター — 人間が検証</h3>
+                        <p>AIのアラートを受け、現地に赴いて実態を確認。関係者ヒアリング、物的証拠の収集。デジタルでは捕まえられない不正を人間の目で捉える。</p>
+                    </div>
+                </div>
+                <div class="defense-connector reveal">↓ 不正を確認した場合</div>
+                <div class="defense-line reveal">
+                    <div class="defense-dot">3</div>
+                    <div class="defense-content">
+                        <h3 style="color:var(--orange)">裁定機関 — 判断・処分</h3>
+                        <p>証拠の審査、認定取消の判断、当局への情報提供。虚偽告発の場合は告発側の調査NPOにペナルティ。双方向の公平性を担保。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SCENARIO -->
+    <section id="scenario">
+        <div class="container">
+            <div class="section-label reveal">Use Cases</div>
+            <h2 class="section-title reveal">こう機能する</h2>
+            <p class="section-desc reveal">具体的なシナリオで、NPOファンドの動きを見る。</p>
+            <div class="scenario-tabs reveal" id="scenarioTabs">
+                <div class="scenario-tab active" data-tab="0">✅ 善良な組織の評価</div>
+                <div class="scenario-tab" data-tab="1">🚫 不正組織の淘汰</div>
+                <div class="scenario-tab" data-tab="2">🛡️ 虚偽告発の抑止</div>
+                <div class="scenario-tab" data-tab="3">👤 市民の参加</div>
+            </div>
+            <div class="scenario-panel active" id="sp0">
+                <ol class="scenario-steps">
+                    <li>里山保全NPO「やまもり」がファンドに参加申請</li>
+                    <li>認定機関が反社チェック・活動実態を審査 → 認定</li>
+                    <li>AI監査がデータ接続、活動のリアルタイムトラッキング開始</li>
+                    <li>四半期ごとにAI生成のインパクトレポートが自動公開</li>
+                    <li>地域住民がファンド経由で少額投資、県外企業もCSR枠で参加</li>
+                    <li>活動が可視化され、ボランティア応募も増加</li>
+                </ol>
+                <div class="scenario-result good">→ 補助金依存から脱却し、持続可能な資金基盤を獲得</div>
+            </div>
+            <div class="scenario-panel" id="sp1">
+                <ol class="scenario-steps">
+                    <li>宗教法人X（実態はペーパーカンパニー）がファンドに参加</li>
+                    <li>AI監査が異常を検知：不自然な資金流入、海外送金パターン</li>
+                    <li>AIが「要調査」フラグ → 調査NPOが現地調査を開始</li>
+                    <li>施設未使用・活動実態なし・マネーロンダリングの疑いを確認</li>
+                    <li>調査結果が市場に公開 → 法人Xの市場評価が急落</li>
+                    <li>裁定機関が審査 → 認定取消 → 関係当局へ情報提供</li>
+                </ol>
+                <div class="scenario-result good">→ 市場メカニズムで不正法人が自然に排除される</div>
+            </div>
+            <div class="scenario-panel" id="sp2">
+                <ol class="scenario-steps">
+                    <li>調査NPO「シャドウ」が健全な神社Yに虚偽の不正告発</li>
+                    <li>神社Yの市場評価が一時的に下落</li>
+                    <li>AI監査が双方を分析 → 神社Yに異常なし、「シャドウ」の過去レポートに不正確な記述</li>
+                    <li>裁定機関が調査 → 告発に根拠なしと判定</li>
+                    <li>「シャドウ」の信頼スコアが大幅下落 → 資金配分カット</li>
+                    <li>悪質と判断され認定取消 + 損害賠償</li>
+                </ol>
+                <div class="scenario-result warn">→ 虚偽告発が経済的に割に合わない構造で抑止される</div>
+            </div>
+            <div class="scenario-panel" id="sp3">
+                <ol class="scenario-steps">
+                    <li>会社員の田中さんが「地元の神社を残したい」と思う</li>
+                    <li>NPOファンドのアプリで近隣の参加法人を検索</li>
+                    <li>地元の八幡宮のAI監査レポートを閲覧（透明性スコア：92/100）</li>
+                    <li>月額1,000円の定期投資を設定</li>
+                    <li>四半期ごとに活動レポートを受け取り、修繕の進捗を確認</li>
+                    <li>年末に寄付金控除をAIが自動申請</li>
+                </ol>
+                <div class="scenario-result good">→ 小額でも意味のある社会貢献が、誰でもスマホから可能に</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ROADMAP -->
+    <section id="roadmap">
+        <div class="container">
+            <div class="section-label reveal">Roadmap</div>
+            <h2 class="section-title reveal">段階的実装計画</h2>
+            <div class="road-track reveal">
+                <div class="road-phase">
+                    <h3>Phase 0</h3>
+                    <span class="phase-period">〜1年</span>
+                    <p>法制度調査、AI監査PoC、ステークホルダーヒアリング、パイロット自治体選定</p>
+                </div>
+                <div class="road-phase">
+                    <h3>Phase 1</h3>
+                    <span class="phase-period">1-2年</span>
+                    <p>1自治体でパイロット。15-30法人参加。仮説検証とフィードバックループ</p>
+                </div>
+                <div class="road-phase">
+                    <h3>Phase 2</h3>
+                    <span class="phase-period">2年</span>
+                    <p>5-10自治体に拡大。200-500法人。地域間比較。補助金50%移行</p>
+                </div>
+                <div class="road-phase">
+                    <h3>Phase 3</h3>
+                    <span class="phase-period">2年</span>
+                    <p>全国展開。法改正。5,000法人以上。プラットフォームとして自立</p>
+                </div>
+                <div class="road-phase">
+                    <h3>Phase 4</h3>
+                    <span class="phase-period">3年〜</span>
+                    <p>国際展開。東アジア→中東。日本発の公益活動モデルとして</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <h2 class="footer-title reveal"><span class="gradient-text">千年の文化を、次の千年へ。</span></h2>
+            <p class="reveal">NPOファンド構想 — Draft v0.1 | 2026.02</p>
+            <div class="footer-links reveal">
+                <a href="./01_concept_paper.md">コンセプトペーパー</a>
+                <a href="./02_ecosystem_and_scenarios.md">エコシステム分析</a>
+                <a href="./03_implementation_roadmap.md">実装ロードマップ</a>
+                <a href="./04_theoretical_foundations.md">理論的基盤</a>
+            </div>
+            <div class="footer-copy reveal">© 2026 NPOファンド構想プロジェクト</div>
+        </div>
+    </footer>
+
+    <script>
+        // Intersection Observer for reveal animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target) } })
+        }, { threshold: .15, rootMargin: '0px 0px -50px 0px' });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Nav scroll effect
+        const nav = document.getElementById('nav');
+        window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 80) });
+
+        // Counter animation
+        function animateCounters() {
+            document.querySelectorAll('[data-count]').forEach(el => {
+                const target = parseInt(el.dataset.count);
+                const duration = 2000;
+                const start = performance.now();
+                function update(now) {
+                    const elapsed = now - start;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const eased = 1 - Math.pow(1 - progress, 3);
+                    el.textContent = Math.floor(target * eased).toLocaleString();
+                    if (progress < 1) requestAnimationFrame(update);
+                }
+                requestAnimationFrame(update);
+            });
+        }
+        const heroObserver = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) { animateCounters(); heroObserver.disconnect() }
+        }, { threshold: .5 });
+        heroObserver.observe(document.querySelector('.hero-stats'));
+
+        // Scenario tabs
+        document.querySelectorAll('.scenario-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.scenario-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.scenario-panel').forEach(p => p.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById('sp' + tab.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Particle canvas
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight }
+        resize(); window.addEventListener('resize', resize);
+        for (let i = 0; i < 60; i++) {
+            particles.push({
+                x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+                vx: (Math.random() - .5) * .3, vy: (Math.random() - .5) * .3,
+                r: Math.random() * 2 + .5,
+                o: Math.random() * .3 + .1
+            });
+        }
+        function drawParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, i) => {
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(124,108,240,${p.o})`; ctx.fill();
+                // Connect nearby particles
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = p.x - particles[j].x, dy = p.y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 150) {
+                        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(124,108,240,${.06 * (1 - dist / 150)})`; ctx.stroke();
+                    }
+                }
+            });
+            requestAnimationFrame(drawParticles);
+        }
+        drawParticles();
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelector(a.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+
+</html>
