@@ -15,6 +15,7 @@ GitHub Pages で公開中です。
 | **[📱 アプリモックアップ](https://akinori114514.github.io/NPOfund/app_mockup.html)** | 支援者向けスマホアプリの体験デモ |
 | **[🌐 ランディングページ](https://akinori114514.github.io/NPOfund/index.html)** | プロジェクトのビジョンと仕組み |
 | **[📊 ピッチスライド](https://akinori114514.github.io/NPOfund/slides.html)** | コンセプト説明用プレゼン（← → キーで操作） |
+| **[📖 思想・構想解説スライド](https://akinori114514.github.io/NPOfund/explainer_slides.html)** | NPOファンドの思想・仕組みを12枚で体系的に解説 |
 
 ---
 

@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NPOファンド構想 — 思想と仕組みの解説</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Inter:wght@300;400;600;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ========== RESET & TOKEN ========== */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #06061a;
+            --surface: #0e0e2c;
+            --card: rgba(18, 18, 60, 0.65);
+            --card-hover: rgba(24, 24, 80, 0.8);
+            --accent: #7c6cf0;
+            --accent2: #a89afe;
+            --teal: #22d3bb;
+            --teal2: #5eead4;
+            --gold: #f0c040;
+            --rose: #f472b6;
+            --text: #eeeef8;
+            --dim: #9494c0;
+            --muted: #5e5e8a;
+            --glass: rgba(255, 255, 255, 0.06);
+            --glass-b: rgba(255, 255, 255, 0.10);
+            --radius: 20px;
+            --radius-sm: 12px;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            line-height: 1.7;
+            letter-spacing: 0.02em;
+        }
+
+        /* ========== BACKGROUND EFFECTS ========== */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 10%, rgba(124, 108, 240, 0.12), transparent 60%),
+                radial-gradient(ellipse 60% 50% at 80% 90%, rgba(34, 211, 187, 0.10), transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ========== LAYOUT ========== */
+        .deck {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 56px 72px 80px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .55s cubic-bezier(.4, 0, .2, 1), transform .55s cubic-bezier(.4, 0, .2, 1);
+            transform: translateY(24px) scale(0.98);
+        }
+
+        .slide.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0) scale(1);
+        }
+
+        /* ========== TYPOGRAPHY ========== */
+        h1 {
+            font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+            font-weight: 900;
+            line-height: 1.25;
+            margin-bottom: 20px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--teal), var(--accent2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2 {
+            font-size: clamp(1.5rem, 3vw, 2.4rem);
+            font-weight: 700;
+            margin-bottom: 28px;
+            text-align: center;
+            color: var(--text);
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--teal);
+            margin-bottom: 6px;
+        }
+
+        p,
+        .desc {
+            font-size: 1.05rem;
+            color: var(--dim);
+            max-width: 820px;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: clamp(1.1rem, 2vw, 1.5rem);
+            color: var(--dim);
+            font-weight: 300;
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--teal), var(--accent2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .highlight {
+            color: var(--teal);
+            font-weight: 700;
+        }
+
+        /* ========== CARDS ========== */
+        .card {
+            background: var(--card);
+            backdrop-filter: blur(14px);
+            border-radius: var(--radius);
+            padding: 28px 24px;
+            border: 1px solid var(--glass-b);
+            transition: transform .3s, border-color .3s, box-shadow .3s;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+        }
+
+        .card:hover {
+            border-color: var(--teal);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(34, 211, 187, 0.12);
+        }
+
+        .card .icon {
+            font-size: 2.4rem;
+            margin-bottom: 14px;
+            display: block;
+        }
+
+        .card p {
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        /* ========== GRIDS ========== */
+        .grid2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .grid3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        .grid4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        .grid5 {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 14px;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        /* ========== VERSUS BOX ========== */
+        .vs-container {
+            display: flex;
+            gap: 24px;
+            align-items: stretch;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .vs-box {
+            flex: 1;
+            border-radius: var(--radius);
+            padding: 28px;
+        }
+
+        .vs-box.old {
+            background: rgba(120, 40, 40, 0.15);
+            border: 1px solid rgba(244, 114, 182, 0.25);
+        }
+
+        .vs-box.new {
+            background: rgba(20, 80, 70, 0.2);
+            border: 1px solid rgba(34, 211, 187, 0.3);
+        }
+
+        .vs-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+            display: block;
+        }
+
+        .vs-box.old .vs-label {
+            color: var(--rose);
+        }
+
+        .vs-box.new .vs-label {
+            color: var(--teal);
+        }
+
+        .vs-box ul {
+            list-style: none;
+        }
+
+        .vs-box li {
+            color: var(--dim);
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            padding-left: 1.3em;
+            position: relative;
+        }
+
+        .vs-box li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .vs-box.old li::before {
+            background: var(--rose);
+        }
+
+        .vs-box.new li::before {
+            background: var(--teal);
+        }
+
+        /* ========== FLOW ========== */
+        .flow {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 1100px;
+        }
+
+        .flow-step {
+            background: var(--card);
+            border-radius: var(--radius-sm);
+            padding: 16px 20px;
+            text-align: center;
+            border: 1px solid var(--glass-b);
+            min-width: 140px;
+        }
+
+        .flow-step .step-icon {
+            font-size: 1.8rem;
+            margin-bottom: 6px;
+        }
+
+        .flow-step .step-label {
+            font-size: 0.85rem;
+            color: var(--dim);
+        }
+
+        .flow-step .step-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .flow-arrow {
+            font-size: 1.4rem;
+            color: var(--muted);
+        }
+
+        /* ========== FUND BAR ========== */
+        .fund-bar {
+            display: flex;
+            width: 100%;
+            max-width: 800px;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            margin: 24px 0;
+            height: 56px;
+        }
+
+        .fund-seg {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #fff;
+        }
+
+        .fund-seg.base {
+            flex: 3;
+            background: linear-gradient(135deg, var(--accent), #5b4cd1);
+        }
+
+        .fund-seg.market {
+            flex: 6;
+            background: linear-gradient(135deg, #0e9480, var(--teal));
+        }
+
+        .fund-seg.research {
+            flex: 1;
+            background: linear-gradient(135deg, #b08020, var(--gold));
+        }
+
+        /* ========== ECOSYSTEM DIAGRAM ========== */
+        .eco-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .eco-row {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .eco-node {
+            background: var(--card);
+            border-radius: var(--radius-sm);
+            padding: 14px 20px;
+            text-align: center;
+            border: 1px solid var(--glass-b);
+            min-width: 130px;
+            transition: .3s;
+        }
+
+        .eco-node:hover {
+            border-color: var(--teal);
+            transform: translateY(-3px);
+        }
+
+        .eco-node .node-icon {
+            font-size: 1.6rem;
+            margin-bottom: 4px;
+        }
+
+        .eco-node .node-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .eco-node .node-sub {
+            font-size: 0.75rem;
+            color: var(--dim);
+        }
+
+        .eco-arrow {
+            color: var(--muted);
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        .eco-center-box {
+            background: rgba(34, 211, 187, 0.06);
+            border: 1.5px solid rgba(34, 211, 187, 0.3);
+            border-radius: var(--radius);
+            padding: 20px 32px;
+            text-align: center;
+        }
+
+        /* ========== TIMELINE (ROADMAP) ========== */
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 900px;
+            position: relative;
+            margin-top: 36px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 22px;
+            left: 5%;
+            right: 5%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--teal));
+            opacity: 0.3;
+            z-index: 0;
+        }
+
+        .phase {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            flex: 1;
+        }
+
+        .phase-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 2px solid var(--teal);
+            margin: 16px auto;
+            transition: .3s;
+        }
+
+        .phase:hover .phase-dot {
+            background: var(--teal);
+            box-shadow: 0 0 16px var(--teal);
+        }
+
+        .phase-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--teal2);
+        }
+
+        .phase-desc {
+            font-size: 0.78rem;
+            color: var(--dim);
+            margin-top: 2px;
+        }
+
+        /* ========== SHIELD LAYERS ========== */
+        .shield {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            width: 100%;
+            max-width: 700px;
+        }
+
+        .shield-layer {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 24px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--glass-b);
+        }
+
+        .shield-layer:nth-child(1) {
+            background: rgba(34, 211, 187, 0.08);
+            border-color: rgba(34, 211, 187, 0.25);
+        }
+
+        .shield-layer:nth-child(2) {
+            background: rgba(124, 108, 240, 0.08);
+            border-color: rgba(124, 108, 240, 0.25);
+        }
+
+        .shield-layer:nth-child(3) {
+            background: rgba(240, 192, 64, 0.06);
+            border-color: rgba(240, 192, 64, 0.2);
+        }
+
+        .shield-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .shield-info {
+            flex: 1;
+        }
+
+        .shield-info strong {
+            font-size: 1rem;
+            color: var(--text);
+        }
+
+        .shield-info p {
+            font-size: 0.85rem;
+            color: var(--dim);
+            text-align: left;
+            margin-top: 2px;
+        }
+
+        /* ========== STAT ========== */
+        .stat .num {
+            font-size: 3.2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--teal), var(--accent2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat .label {
+            font-size: 0.82rem;
+            color: var(--dim);
+            font-weight: 600;
+            letter-spacing: 0.04em;
+        }
+
+        /* ========== NAVIGATION ========== */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--teal), var(--accent));
+            transition: width .4s ease;
+            z-index: 200;
+        }
+
+        .nav {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+            background: rgba(10, 10, 30, 0.7);
+            backdrop-filter: blur(8px);
+            padding: 8px 16px;
+            border-radius: 999px;
+            border: 1px solid var(--glass-b);
+        }
+
+        .nav .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.18);
+            cursor: pointer;
+            transition: .3s;
+        }
+
+        .nav .dot.active {
+            background: var(--teal);
+            box-shadow: 0 0 8px var(--teal);
+            transform: scale(1.3);
+        }
+
+        .slide-number {
+            position: fixed;
+            bottom: 28px;
+            right: 36px;
+            font-size: 13px;
+            color: var(--muted);
+            font-family: 'Inter', sans-serif;
+            z-index: 100;
+        }
+
+        .keys {
+            position: fixed;
+            bottom: 28px;
+            left: 36px;
+            font-size: 11px;
+            color: var(--muted);
+            opacity: 0.5;
+            z-index: 100;
+        }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide.active .anim {
+            animation: fadeUp .55s ease forwards;
+            opacity: 0;
+        }
+
+        .slide.active .anim:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .slide.active .anim:nth-child(2) {
+            animation-delay: .08s;
+        }
+
+        .slide.active .anim:nth-child(3) {
+            animation-delay: .16s;
+        }
+
+        .slide.active .anim:nth-child(4) {
+            animation-delay: .24s;
+        }
+
+        .slide.active .anim:nth-child(5) {
+            animation-delay: .32s;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: .6
+            }
+
+            50% {
+                opacity: 1
+            }
+        }
+
+        .pulse {
+            animation: pulse 2.5s ease infinite;
+        }
+
+        /* ========== TAG / BADGE ========== */
+        .tag {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+        }
+
+        .tag-teal {
+            background: rgba(34, 211, 187, 0.15);
+            color: var(--teal);
+            border: 1px solid rgba(34, 211, 187, 0.3);
+        }
+
+        .tag-accent {
+            background: rgba(124, 108, 240, 0.15);
+            color: var(--accent2);
+            border: 1px solid rgba(124, 108, 240, 0.3);
+        }
+
+        /* ========== UX FLOW ========== */
+        .ux-flow {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            max-width: 1000px;
+        }
+
+        .ux-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 24px;
+            text-align: center;
+            flex: 1;
+            border: 1px solid var(--glass-b);
+            transition: .3s;
+        }
+
+        .ux-card:hover {
+            border-color: var(--teal);
+            transform: translateY(-3px);
+        }
+
+        .ux-card .ux-num {
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--teal), var(--accent2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .ux-card h3 {
+            margin-bottom: 8px;
+        }
+
+        .ux-card p {
+            font-size: 0.88rem;
+            color: var(--dim);
+            text-align: center;
+        }
+
+        .ux-divider {
+            font-size: 1.5rem;
+            color: var(--muted);
+            flex-shrink: 0;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 40px 24px 72px;
+            }
+
+            .grid2,
+            .grid3,
+            .grid4,
+            .grid5 {
+                grid-template-columns: 1fr;
+            }
+
+            .vs-container,
+            .ux-flow {
+                flex-direction: column;
+            }
+
+            .flow {
+                flex-direction: column;
+            }
+
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+
+            .ux-divider {
+                transform: rotate(90deg);
+            }
+
+            .timeline {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .timeline::before {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="deck" id="deck">
+
+        <!-- ===== SLIDE 1 : TITLE ===== -->
+        <div class="slide active">
+            <span class="anim tag tag-teal" style="margin-bottom:20px">NPO FUND PROJECT</span>
+            <h1 class="anim">公益を、<br>市場の力で守る。</h1>
+            <p class="subtitle anim">「課税か保護か」を超える第三の道 ——<br>AI監査 × 市場原理が可能にする、新しい公益活動の資金循環モデル。</p>
+            <p class="anim" style="font-size:0.85rem;color:var(--muted)">← → キーまたはスワイプで移動</p>
+        </div>
+
+        <!-- ===== SLIDE 2 : PROBLEM ===== -->
+        <div class="slide">
+            <h2 class="anim">公益活動が直面する<span class="gradient-text">3つの危機</span></h2>
+            <div class="grid3 anim">
+                <div class="card">
+                    <span class="icon">💸</span>
+                    <h3>資金の枯渇</h3>
+                    <p>少子高齢化で檀家・氏子が減少。補助金は申請コストが高く、小規模NPOほど疲弊する構造。</p>
+                </div>
+                <div class="card">
+                    <span class="icon">🔒</span>
+                    <h3>不透明な資金の流れ</h3>
+                    <p>「寄付がどう使われたか分からない」という不信感。一方で悪用するペーパーカンパニーも存在。</p>
+                </div>
+                <div class="card">
+                    <span class="icon">🏛️</span>
+                    <h3>行政リソースの限界</h3>
+                    <p>年１回の書類審査では実態を把握できない。人口減で行政の「小さな政府」化は避けられない。</p>
+                </div>
+            </div>
+            <p class="anim" style="margin-top:28px;font-size:0.95rem">公園整備、河川保全、神社仏閣、祭り——<br><strong
+                    style="color:var(--text)">「収益にならないが社会に不可欠な活動」ほど持続が困難。</strong></p>
+        </div>
+
+        <!-- ===== SLIDE 3 : PHILOSOPHY ===== -->
+        <div class="slide">
+            <span class="anim tag tag-accent" style="margin-bottom:16px">CORE PHILOSOPHY</span>
+            <h2 class="anim">課税か、保護か。<br>その<span class="gradient-text">二項対立を超える。</span></h2>
+            <div class="vs-container anim">
+                <div class="vs-box old">
+                    <span class="vs-label">従来の議論</span>
+                    <ul>
+                        <li>宗教法人に課税 → 千年の文化が消える</li>
+                        <li>非課税を維持 → 不正の温床が残る</li>
+                        <li>補助金で保護 → 行政コスト増大</li>
+                    </ul>
+                </div>
+                <div class="vs-box new">
+                    <span class="vs-label">NPOファンドの回答</span>
+                    <ul>
+                        <li>透明性を前提に市場で価値を証明する</li>
+                        <li>AI監査で不正を自動検知する</li>
+                        <li>民間の力で公共サービスを維持する</li>
+                    </ul>
+                </div>
+            </div>
+            <p class="anim" style="margin-top:20px;font-size:0.95rem">
+                <strong style="color:var(--text)">「世の中にどれだけ必要とされているか」を、市場に聞く。</strong>
+            </p>
+        </div>
+
+        <!-- ===== SLIDE 4 : WHAT IS NPO FUND ===== -->
+        <div class="slide">
+            <h2 class="anim">NPOファンドとは？</h2>
+            <p class="desc anim" style="margin-bottom:28px">公益活動組織への資金配分を、<strong
+                    style="color:var(--text)">市場原理</strong>と<strong style="color:var(--text)">AI監査</strong>で行う新しい仕組み。
+            </p>
+            <div class="grid3 anim">
+                <div class="card" style="border-color:rgba(34,211,187,0.3)">
+                    <span class="icon">📈</span>
+                    <h3>市場原理が基盤</h3>
+                    <p>活動への賛同を「資金の投入」で表現。成果を出す組織に、自然と多くの資金が流れる。</p>
+                </div>
+                <div class="card" style="border-color:rgba(124,108,240,0.3)">
+                    <span class="icon">🤖</span>
+                    <h3>AI監査が標準装備</h3>
+                    <p>全参加組織を常時・自動で監査。低コストで、継続的で、予防的な新しい監査のかたち。</p>
+                </div>
+                <div class="card" style="border-color:rgba(240,192,64,0.25)">
+                    <span class="icon">🔍</span>
+                    <h3>人間が補完する</h3>
+                    <p>AIでは取れない現実世界のデータは、調査NPO（バウンティハンター）が収集する。</p>
+                </div>
+            </div>
+            <p class="anim" style="margin-top:22px;font-size:0.85rem;color:var(--muted)">
+                参加は任意。既存制度と並存。透明性を前提に税制優遇を強化し、自発的参加を促す。</p>
+        </div>
+
+        <!-- ===== SLIDE 5 : ECOSYSTEM ===== -->
+        <div class="slide">
+            <h2 class="anim">エコシステム<span class="gradient-text">全体像</span></h2>
+            <div class="eco-diagram anim">
+                <div class="eco-row">
+                    <div class="eco-node">
+                        <div class="node-icon">🏢</div>
+                        <div class="node-label">国・自治体</div>
+                        <div class="node-sub">拠出金</div>
+                    </div>
+                    <div class="eco-node">
+                        <div class="node-icon">🏭</div>
+                        <div class="node-label">企業</div>
+                        <div class="node-sub">CSR投資</div>
+                    </div>
+                    <div class="eco-node">
+                        <div class="node-icon">👥</div>
+                        <div class="node-label">一般市民</div>
+                        <div class="node-sub">小額投資・寄付</div>
+                    </div>
+                </div>
+                <div class="eco-arrow">▼ 資金 ▼</div>
+                <div class="eco-center-box" style="width:100%">
+                    <div style="font-size:1.1rem;font-weight:700;color:var(--teal);margin-bottom:6px">NPOファンド（市場）</div>
+                    <div class="eco-row" style="gap:12px">
+                        <div class="eco-node" style="min-width:110px">
+                            <div class="node-icon">🏛️</div>
+                            <div class="node-label">活動NPO</div>
+                            <div class="node-sub">公園・福祉・教育</div>
+                        </div>
+                        <div class="eco-node" style="min-width:110px">
+                            <div class="node-icon">⛩️</div>
+                            <div class="node-label">宗教法人</div>
+                            <div class="node-sub">神社・寺院</div>
+                        </div>
+                        <div class="eco-node" style="min-width:110px">
+                            <div class="node-icon">🔍</div>
+                            <div class="node-label">調査NPO</div>
+                            <div class="node-sub">バウンティハンター</div>
+                        </div>
+                        <div class="eco-node" style="min-width:110px;border-color:rgba(34,211,187,0.3)">
+                            <div class="node-icon">🤖</div>
+                            <div class="node-label">AI監査</div>
+                            <div class="node-sub">常時自動監査</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="eco-arrow">▼ サービス ▼</div>
+                <div class="eco-row">
+                    <div class="eco-node">
+                        <div class="node-icon">🌳</div>
+                        <div class="node-label">地域住民</div>
+                    </div>
+                    <div class="eco-node">
+                        <div class="node-icon">🙏</div>
+                        <div class="node-label">参拝者</div>
+                    </div>
+                    <div class="eco-node">
+                        <div class="node-icon">🌏</div>
+                        <div class="node-label">社会全体</div>
+                    </div>
+                </div>
+            </div>
+            <div class="eco-row anim" style="margin-top:14px;gap:12px">
+                <div class="eco-node" style="border-color:rgba(240,192,64,0.25)">
+                    <div class="node-icon">📋</div>
+                    <div class="node-label">認定機関</div>
+                    <div class="node-sub">反社チェック</div>
+                </div>
+                <div class="eco-node" style="border-color:rgba(240,192,64,0.25)">
+                    <div class="node-icon">⚖️</div>
+                    <div class="node-label">裁定機関</div>
+                    <div class="node-sub">紛争解決</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== SLIDE 6 : AI AUDIT ===== -->
+        <div class="slide">
+            <span class="anim tag tag-teal" style="margin-bottom:16px">AI AUDIT ENGINE</span>
+            <h2 class="anim">AIが変える<span class="gradient-text">監査のかたち</span></h2>
+            <div class="vs-container anim">
+                <div class="vs-box old">
+                    <span class="vs-label">従来の監査</span>
+                    <ul>
+                        <li><strong style="color:var(--rose)">年1回</strong>の書類チェック</li>
+                        <li>監査法人のコスト：<strong style="color:var(--rose)">数百万円〜</strong></li>
+                        <li>事後的な報告</li>
+                        <li>中小組織には非現実的</li>
+                    </ul>
+                </div>
+                <div class="vs-box new">
+                    <span class="vs-label">AI監査</span>
+                    <ul>
+                        <li><strong style="color:var(--teal)">常時</strong>データストリーム分析</li>
+                        <li>コスト：<strong style="color:var(--teal)">月額数千円〜</strong></li>
+                        <li>リアルタイム異常検知</li>
+                        <li>全参加組織に均等な監査</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="grid5 anim" style="margin-top:24px">
+                <div class="card" style="padding:16px;text-align:center"><span class="icon"
+                        style="font-size:1.6rem">📊</span>
+                    <p style="font-size:0.8rem;text-align:center">財務異常検知</p>
+                </div>
+                <div class="card" style="padding:16px;text-align:center"><span class="icon"
+                        style="font-size:1.6rem">📝</span>
+                    <p style="font-size:0.8rem;text-align:center">レポート自動生成</p>
+                </div>
+                <div class="card" style="padding:16px;text-align:center"><span class="icon"
+                        style="font-size:1.6rem">🎯</span>
+                    <p style="font-size:0.8rem;text-align:center">インパクト評価</p>
+                </div>
+                <div class="card" style="padding:16px;text-align:center"><span class="icon"
+                        style="font-size:1.6rem">💡</span>
+                    <p style="font-size:0.8rem;text-align:center">投資判断支援</p>
+                </div>
+                <div class="card" style="padding:16px;text-align:center"><span class="icon"
+                        style="font-size:1.6rem">⚠️</span>
+                    <p style="font-size:0.8rem;text-align:center">不正予兆検出</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== SLIDE 7 : BOUNTY HUNTER ===== -->
+        <div class="slide">
+            <span class="anim tag tag-accent" style="margin-bottom:16px">BOUNTY HUNTER</span>
+            <h2 class="anim">調査NPO —— <span class="gradient-text">市場の免疫系</span></h2>
+            <p class="desc anim" style="margin-bottom:24px">AIが取得できない「現実世界のデータ」を収集する、エコシステムの健全性の鍵。</p>
+            <div class="grid2 anim">
+                <div class="card">
+                    <h3 style="color:var(--accent2)">🔍 何をするのか</h3>
+                    <ul style="list-style:none;margin-top:10px">
+                        <li style="color:var(--dim);margin-bottom:8px;font-size:0.9rem">🏠 施設の実態を目で確認する</li>
+                        <li style="color:var(--dim);margin-bottom:8px;font-size:0.9rem">🗣️ 受益者への聞き取り調査</li>
+                        <li style="color:var(--dim);margin-bottom:8px;font-size:0.9rem">📋 公開データと実態の照合</li>
+                        <li style="color:var(--dim);font-size:0.9rem">📑 調査レポートをファンドに提出</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 style="color:var(--gold)">🛡️ なぜ安全なのか</h3>
+                    <ul style="list-style:none;margin-top:10px">
+                        <li style="color:var(--dim);margin-bottom:8px;font-size:0.9rem">🔑 国家認定必須（反社チェック徹底）</li>
+                        <li style="color:var(--dim);margin-bottom:8px;font-size:0.9rem">🪞 調査NPO自身も透明性・監査対象</li>
+                        <li style="color:var(--dim);margin-bottom:8px;font-size:0.9rem">📉 虚偽告発 → 自身の信頼スコア崩壊</li>
+                        <li style="color:var(--dim);font-size:0.9rem">⚖️ 厳格な法的ガイドライン</li>
+                    </ul>
+                </div>
+            </div>
+            <p class="anim" style="margin-top:18px;font-size:0.9rem;color:var(--muted)">
+                「<strong style="color:var(--text)">クリーンな人しかできない</strong>」構造にすることで、マッチポンプを防ぐ。
+            </p>
+        </div>
+
+        <!-- ===== SLIDE 8 : FUND FLOW ===== -->
+        <div class="slide">
+            <h2 class="anim">資金フロー：<span class="gradient-text">ハイブリッド構造</span></h2>
+            <p class="desc anim" style="margin-bottom:20px">市場原理と弱者保護を両立する、三層の資金配分。</p>
+
+            <div class="fund-bar anim">
+                <div class="fund-seg base">ベース 30%</div>
+                <div class="fund-seg market">マーケット 60%</div>
+                <div class="fund-seg research">10%</div>
+            </div>
+
+            <div class="grid3 anim">
+                <div class="card" style="border-left:3px solid var(--accent)">
+                    <h3 style="color:var(--accent2)">🛡️ ベースファンド</h3>
+                    <p style="font-size:0.9rem"><strong>30%</strong> — 最低保障枠。全認定組織に均等配分。地味だが重要な活動を守る安全網。</p>
+                </div>
+                <div class="card" style="border-left:3px solid var(--teal)">
+                    <h3>📈 マーケットファンド</h3>
+                    <p style="font-size:0.9rem"><strong>60%</strong> — 市場評価に連動。成果を出す組織により多くの資金が流れる。成長のエンジン。</p>
+                </div>
+                <div class="card" style="border-left:3px solid var(--gold)">
+                    <h3 style="color:var(--gold)">🔍 調査ファンド</h3>
+                    <p style="font-size:0.9rem"><strong>10%</strong> — 調査NPOの活動資金と報奨金。健全性維持のための投資。</p>
+                </div>
+            </div>
+            <p class="anim" style="margin-top:18px;font-size:0.85rem;color:var(--muted)">
+                比率は初期設計値。市場の成熟に応じて調整される。
+            </p>
+        </div>
+
+        <!-- ===== SLIDE 9 : USER EXPERIENCE ===== -->
+        <div class="slide">
+            <h2 class="anim">あなたも<span class="gradient-text">参加できる。</span></h2>
+            <p class="desc anim" style="margin-bottom:28px">
+                月<strong style="color:var(--teal)">1,000円</strong>から。アプリひとつで、地域の公益活動を支える「投資家」になれる。
+            </p>
+            <div class="ux-flow anim">
+                <div class="ux-card">
+                    <div class="ux-num">1</div>
+                    <h3>探す</h3>
+                    <p>アプリで近隣の活動を検索。AI監査レポートで透明性を確認。</p>
+                </div>
+                <div class="ux-divider">→</div>
+                <div class="ux-card" style="border-color:rgba(34,211,187,0.3)">
+                    <div class="ux-num">2</div>
+                    <h3>投資する</h3>
+                    <p>応援したい活動に小額から投資。配分の意思決定に参加。</p>
+                </div>
+                <div class="ux-divider">→</div>
+                <div class="ux-card">
+                    <div class="ux-num">3</div>
+                    <h3>見届ける</h3>
+                    <p>四半期のレポートで成果を確認。税制控除も自動申請。</p>
+                </div>
+            </div>
+            <p class="anim" style="margin-top:22px;font-size:0.9rem;color:var(--dim)">
+                「寄付して終わり」ではなく、<strong style="color:var(--text)">成果が返ってくる循環</strong>を体験する。
+            </p>
+        </div>
+
+        <!-- ===== SLIDE 10 : SAFETY ===== -->
+        <div class="slide">
+            <h2 class="anim">三重の<span class="gradient-text">防御ライン</span></h2>
+            <p class="desc anim" style="margin-bottom:24px">不正は市場メカニズムで自然に排除される。</p>
+            <div class="shield anim">
+                <div class="shield-layer">
+                    <div class="shield-icon">🤖</div>
+                    <div class="shield-info">
+                        <strong>第1防御線：AI監査（常時・自動）</strong>
+                        <p>財務異常検知、データ整合性チェック、不正パターンの予兆検出をリアルタイムで。</p>
+                    </div>
+                </div>
+                <div class="shield-layer">
+                    <div class="shield-icon">🕵️</div>
+                    <div class="shield-info">
+                        <strong>第2防御線：調査NPO（人間・現地）</strong>
+                        <p>AIが「要調査」フラグを立てた組織に対し、現地確認・関係者ヒアリング・物的証拠収集。</p>
+                    </div>
+                </div>
+                <div class="shield-layer">
+                    <div class="shield-icon">⚖️</div>
+                    <div class="shield-info">
+                        <strong>第3防御線：裁定機関（判断・処分）</strong>
+                        <p>証拠の審査、認定取消の判断、関係当局への情報提供、損害賠償の裁定。</p>
+                    </div>
+                </div>
+            </div>
+            <p class="anim" style="margin-top:18px;font-size:0.9rem;color:var(--dim)">
+                弱者切り捨て防止：ベースファンド保障 / 任意参加 / 救済導線を先に設計。
+            </p>
+        </div>
+
+        <!-- ===== SLIDE 11 : ROADMAP ===== -->
+        <div class="slide">
+            <h2 class="anim">実現への<span class="gradient-text">ロードマップ</span></h2>
+            <p class="desc anim">小さく始め、大きく育てる。</p>
+            <div class="timeline anim">
+                <div class="phase">
+                    <div class="phase-title">Phase 0</div>
+                    <div class="phase-dot"
+                        style="background:var(--teal);border-color:var(--teal);box-shadow:0 0 10px var(--teal)"></div>
+                    <div class="phase-desc">調査・設計<br>PoC開発</div>
+                </div>
+                <div class="phase">
+                    <div class="phase-title">Phase 1</div>
+                    <div class="phase-dot"></div>
+                    <div class="phase-desc">地域パイロット<br>1自治体・15法人</div>
+                </div>
+                <div class="phase">
+                    <div class="phase-title">Phase 2</div>
+                    <div class="phase-dot"></div>
+                    <div class="phase-desc">広域展開<br>5〜10自治体</div>
+                </div>
+                <div class="phase">
+                    <div class="phase-title">Phase 3</div>
+                    <div class="phase-dot"></div>
+                    <div class="phase-desc">全国展開<br>プラットフォーム化</div>
+                </div>
+            </div>
+            <div class="grid2 anim" style="margin-top:32px;max-width:800px">
+                <div class="card" style="padding:20px">
+                    <h3>🏮 活用分野は汎用</h3>
+                    <p style="font-size:0.88rem">祭り・福祉・環境・文化財・地域保全——特定分野に限らない、汎用的な制度フレームワーク。</p>
+                </div>
+                <div class="card" style="padding:20px">
+                    <h3>🌏 国際展開の可能性</h3>
+                    <p style="font-size:0.88rem">途上国NGOの透明な資金配分、宗教組織の監査など、モデル自体はグローバルに応用可能。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== SLIDE 12 : CLOSING ===== -->
+        <div class="slide">
+            <div class="anim" style="font-size:4.5rem;margin-bottom:16px">🏮</div>
+            <h1 class="anim">透明性を前提に、<br>市場で価値を証明する。</h1>
+            <p class="subtitle anim" style="max-width:700px">
+                AIという技術的ブレイクスルーが、<br>この道を初めて現実的なものにしている。
+            </p>
+            <div class="anim" style="display:flex;gap:12px;margin-top:12px">
+                <span class="tag tag-teal">NPO FUND PROJECT</span>
+            </div>
+        </div>
+
+    </div> <!-- /deck -->
+
+    <!-- Navigation -->
+    <div class="nav" id="nav"></div>
+    <div class="slide-number" id="slideNum"></div>
+    <div class="keys">← → キーで移動</div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const nav = document.getElementById('nav');
+        const slideNum = document.getElementById('slideNum');
+        const progressBar = document.getElementById('progressBar');
+        let current = 0;
+
+        // Build dots
+        slides.forEach((_, i) => {
+            const d = document.createElement('div');
+            d.className = 'dot' + (i === 0 ? ' active' : '');
+            d.onclick = () => goTo(i);
+            nav.appendChild(d);
+        });
+
+        function goTo(n) {
+            if (n < 0 || n >= slides.length) return;
+            slides[current].classList.remove('active');
+            nav.children[current].classList.remove('active');
+            current = n;
+            slides[current].classList.add('active');
+            nav.children[current].classList.add('active');
+            slideNum.textContent = `${current + 1} / ${slides.length}`;
+            progressBar.style.width = `${((current + 1) / slides.length) * 100}%`;
+        }
+
+        // Keyboard
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+            if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
+            if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+            if (e.key === 'End') { e.preventDefault(); goTo(slides.length - 1); }
+        });
+
+        // Touch
+        let tx = 0;
+        document.addEventListener('touchstart', e => tx = e.touches[0].clientX);
+        document.addEventListener('touchend', e => {
+            const d = e.changedTouches[0].clientX - tx;
+            if (Math.abs(d) > 50) d < 0 ? goTo(current + 1) : goTo(current - 1);
+        });
+
+        // Mouse wheel
+        let wheelCooldown = false;
+        document.addEventListener('wheel', e => {
+            if (wheelCooldown) return;
+            wheelCooldown = true;
+            if (e.deltaY > 0) goTo(current + 1);
+            else if (e.deltaY < 0) goTo(current - 1);
+            setTimeout(() => wheelCooldown = false, 600);
+        });
+
+        goTo(0);
+    </script>
+
+</body>
+
+</html>
