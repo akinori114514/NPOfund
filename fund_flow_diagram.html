@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NPOファンド 税制スキーム × 資金フロー図</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: 'Noto Sans JP', 'Inter', sans-serif;
+            background: #0a0e1a;
+            color: #e0e6f0;
+            min-height: 100vh;
+            overflow-x: hidden
+        }
+
+        .header {
+            text-align: center;
+            padding: 48px 24px 24px;
+            position: relative
+        }
+
+        .header h1 {
+            font-size: clamp(1.6rem, 3vw, 2.4rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #00d4aa, #7c5cfc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent
+        }
+
+        .header p {
+            color: #8892a8;
+            margin-top: 8px;
+            font-size: .95rem
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 16px 24px;
+            flex-wrap: wrap
+        }
+
+        .tab {
+            padding: 10px 24px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, .1);
+            background: rgba(255, 255, 255, .04);
+            color: #8892a8;
+            cursor: pointer;
+            font-size: .85rem;
+            font-weight: 600;
+            transition: all .3s
+        }
+
+        .tab:hover {
+            border-color: rgba(0, 212, 170, .4);
+            color: #e0e6f0
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, rgba(0, 212, 170, .2), rgba(124, 92, 252, .2));
+            border-color: rgba(0, 212, 170, .6);
+            color: #fff
+        }
+
+        .canvas {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 24px;
+            position: relative;
+            min-height: 600px
+        }
+
+        .scene {
+            display: none;
+            animation: fadeIn .5s ease
+        }
+
+        .scene.active {
+            display: block
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(16px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        /* Nodes */
+        .flow {
+            position: relative;
+            width: 100%;
+            min-height: 560px
+        }
+
+        .node {
+            position: absolute;
+            border-radius: 16px;
+            padding: 16px 20px;
+            text-align: center;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, .1);
+            transition: all .3s;
+            cursor: default;
+            z-index: 2
+        }
+
+        .node:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, .4)
+        }
+
+        .node .icon {
+            font-size: 2rem;
+            margin-bottom: 6px
+        }
+
+        .node .label {
+            font-weight: 700;
+            font-size: .95rem
+        }
+
+        .node .sub {
+            font-size: .72rem;
+            color: #8892a8;
+            margin-top: 4px;
+            line-height: 1.4
+        }
+
+        .node .badge {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: .65rem;
+            font-weight: 700
+        }
+
+        /* Node types */
+        .n-source {
+            background: rgba(0, 150, 255, .12);
+            border-color: rgba(0, 150, 255, .3)
+        }
+
+        .n-hub {
+            background: rgba(0, 212, 170, .15);
+            border-color: rgba(0, 212, 170, .4);
+            min-width: 180px
+        }
+
+        .n-gov {
+            background: rgba(255, 170, 0, .1);
+            border-color: rgba(255, 170, 0, .3)
+        }
+
+        .n-dest {
+            background: rgba(124, 92, 252, .12);
+            border-color: rgba(124, 92, 252, .3)
+        }
+
+        .n-tax {
+            background: rgba(255, 80, 120, .1);
+            border-color: rgba(255, 80, 120, .3)
+        }
+
+        .b-green {
+            background: rgba(0, 212, 170, .25);
+            color: #00d4aa
+        }
+
+        .b-blue {
+            background: rgba(0, 150, 255, .25);
+            color: #60b0ff
+        }
+
+        .b-orange {
+            background: rgba(255, 170, 0, .25);
+            color: #ffaa00
+        }
+
+        .b-purple {
+            background: rgba(124, 92, 252, .25);
+            color: #a08cff
+        }
+
+        .b-red {
+            background: rgba(255, 80, 120, .25);
+            color: #ff5078
+        }
+
+        /* SVG arrows */
+        svg.arrows {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none
+        }
+
+        .arrow-line {
+            stroke-width: 2;
+            fill: none;
+            stroke-dasharray: 8 4;
+            animation: dashFlow 1.5s linear infinite
+        }
+
+        .arrow-solid {
+            stroke-width: 2.5;
+            fill: none
+        }
+
+        @keyframes dashFlow {
+            to {
+                stroke-dashoffset: -24
+            }
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            padding: 24px;
+            max-width: 900px;
+            margin: 0 auto
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: .78rem;
+            color: #8892a8
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%
+        }
+
+        /* Info cards */
+        .info-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            max-width: 1100px;
+            margin: 16px auto;
+            padding: 0 24px
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, .03);
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-radius: 14px;
+            padding: 20px;
+            transition: all .3s
+        }
+
+        .info-card:hover {
+            border-color: rgba(0, 212, 170, .3);
+            background: rgba(255, 255, 255, .05)
+        }
+
+        .info-card h3 {
+            font-size: .9rem;
+            margin-bottom: 8px;
+            color: #00d4aa
+        }
+
+        .info-card p {
+            font-size: .78rem;
+            color: #8892a8;
+            line-height: 1.6
+        }
+
+        .info-card .highlight {
+            color: #ffaa00;
+            font-weight: 700
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 24px;
+            color: #4a5068;
+            font-size: .75rem
+        }
+
+        @media(max-width:768px) {
+            .flow {
+                min-height: auto
+            }
+
+            .node {
+                position: relative !important;
+                width: 100% !important;
+                margin-bottom: 12px;
+                left: 0 !important;
+                top: 0 !important
+            }
+
+            svg.arrows {
+                display: none
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>NPOファンド 税制スキーム × 資金フロー</h1>
+        <p>3つの実装シナリオにおける資金の流れと税制優遇効果</p>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" onclick="showScene(0)">シナリオ① 公益財団法人型</div>
+        <div class="tab" onclick="showScene(1)">シナリオ② 新公益信託型</div>
+        <div class="tab" onclick="showScene(2)">シナリオ③ 自治体連携型</div>
+    </div>
+
+    <!-- ===== SCENE 0: 公益財団法人型 ===== -->
+    <div class="canvas">
+        <div class="scene active" id="s0">
+            <div class="flow">
+                <svg class="arrows" viewBox="0 0 1060 540">
+                    <defs>
+                        <marker id="ah0" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                            <polygon points="0 0, 8 3, 0 6" fill="#00d4aa" />
+                        </marker>
+                        <marker id="ah1" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                            <polygon points="0 0, 8 3, 0 6" fill="#0096ff" />
+                        </marker>
+                        <marker id="ah2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                            <polygon points="0 0, 8 3, 0 6" fill="#7c5cfc" />
+                        </marker>
+                        <marker id="ah3" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                            <polygon points="0 0, 8 3, 0 6" fill="#ff5078" />
+                        </marker>
+                    </defs>
+                    <!-- Individual → Fund -->
+                    <path d="M200,80 Q380,60 430,180" class="arrow-line" stroke="#00d4aa" marker-end="url(#ah0)" />
+                    <!-- Corporate → Fund -->
+                    <path d="M200,260 Q350,240 430,220" class="arrow-line" stroke="#0096ff" marker-end="url(#ah1)" />
+                    <!-- Fund → NPOs -->
+                    <path d="M620,180 Q750,120 830,100" class="arrow-solid" stroke="#7c5cfc" marker-end="url(#ah2)" />
+                    <path d="M620,210 Q750,240 830,260" class="arrow-solid" stroke="#7c5cfc" marker-end="url(#ah2)" />
+                    <path d="M620,230 Q750,370 830,400" class="arrow-solid" stroke="#7c5cfc" marker-end="url(#ah2)" />
+                    <!-- Tax return -->
+                    <path d="M430,260 Q300,400 200,430" class="arrow-line" stroke="#ff5078" marker-end="url(#ah3)" />
+                </svg>
+
+                <div class="node n-source" style="left:40px;top:40px;width:180px">
+                    <div class="icon">👤</div>
+                    <div class="label">個人寄附者</div>
+                    <div class="sub">月1,000円〜</div>
+                    <div class="badge b-green">税額控除 最大40%</div>
+                </div>
+                <div class="node n-source" style="left:40px;top:210px;width:180px">
+                    <div class="icon">🏢</div>
+                    <div class="label">法人寄附者</div>
+                    <div class="sub">特別損金算入</div>
+                    <div class="badge b-blue">別枠で損金算入</div>
+                </div>
+                <div class="node n-hub" style="left:400px;top:140px;width:220px">
+                    <div class="icon">🏛️</div>
+                    <div class="label">NPOファンド</div>
+                    <div class="sub">公益財団法人<br>AI監査 + 市場評価で配分</div>
+                    <div class="badge b-green">寄附金控除対象</div>
+                </div>
+                <div class="node n-dest" style="left:790px;top:60px;width:180px">
+                    <div class="icon">🏮</div>
+                    <div class="label">祭り・文化財</div>
+                    <div class="sub">ベース資金 30%</div>
+                </div>
+                <div class="node n-dest" style="left:790px;top:210px;width:180px">
+                    <div class="icon">📈</div>
+                    <div class="label">成果連動事業</div>
+                    <div class="sub">マーケット資金 60%</div>
+                </div>
+                <div class="node n-dest" style="left:790px;top:360px;width:180px">
+                    <div class="icon">🔬</div>
+                    <div class="label">調査・研究</div>
+                    <div class="sub">リサーチ資金 10%</div>
+                </div>
+                <div class="node n-tax" style="left:40px;top:390px;width:180px">
+                    <div class="icon">💰</div>
+                    <div class="label">税制還元</div>
+                    <div class="sub">所得控除 or 税額控除<br>+ 住民税最大10%</div>
+                    <div class="badge b-red">実質負担を大幅軽減</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== SCENE 1: 新公益信託型 ===== -->
+        <div class="scene" id="s1">
+            <div class="flow">
+                <svg class="arrows" viewBox="0 0 1060 540">
+                    <defs>
+                        <marker id="bh0" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                            <polygon points="0 0, 8 3, 0 6" fill="#00d4aa" />
+                        </marker>
+                        <marker id="bh1" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                            <polygon points="0 0, 8 3, 0 6" fill="#ffaa00" />
+                        </marker>
+                        <marker id="bh2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                            <polygon points="0 0, 8 3, 0 6" fill="#7c5cfc" />
+                        </marker>
+                    </defs>
+                    <path d="M200,80 Q380,50 430,160" class="arrow-line" stroke="#00d4aa" marker-end="url(#bh0)" />
+                    <path d="M200,230 Q350,200 430,190" class="arrow-line" stroke="#00d4aa" marker-end="url(#bh0)" />
+                    <path d="M200,380 Q350,340 430,220" class="arrow-line" stroke="#ffaa00" marker-end="url(#bh1)" />
+                    <path d="M620,180 Q750,120 830,100" class="arrow-solid" stroke="#7c5cfc" marker-end="url(#bh2)" />
+                    <path d="M620,210 Q750,300 830,300" class="arrow-solid" stroke="#7c5cfc" marker-end="url(#bh2)" />
+                </svg>
+                <div class="node n-source" style="left:40px;top:40px;width:180px">
+                    <div class="icon">👤</div>
+                    <div class="label">個人（金銭）</div>
+                    <div class="sub">寄附金控除対象</div>
+                    <div class="badge b-green">税額控除 40%</div>
+                </div>
+                <div class="node n-source" style="left:40px;top:190px;width:180px">
+                    <div class="icon">🏢</div>
+                    <div class="label">法人（金銭）</div>
+                    <div class="sub">特別損金算入</div>
+                    <div class="badge b-blue">別枠損金算入</div>
+                </div>
+                <div class="node n-source" style="left:40px;top:340px;width:180px">
+                    <div class="icon">🏠</div>
+                    <div class="label">現物寄附</div>
+                    <div class="sub">不動産・有価証券・知財</div>
+                    <div class="badge b-orange">譲渡所得 非課税</div>
+                </div>
+                <div class="node n-hub" style="left:400px;top:130px;width:220px">
+                    <div class="icon">🔐</div>
+                    <div class="label">公益信託</div>
+                    <div class="sub">受託者: NPO法人<br>信託財産からの所得: 非課税<br>AI監査エンジンで運用</div>
+                    <div class="badge b-green">2026年4月〜</div>
+                </div>
+                <div class="node n-dest" style="left:790px;top:60px;width:180px">
+                    <div class="icon">🏮</div>
+                    <div class="label">祭り・文化財</div>
+                    <div class="sub">助成 + 事業運営</div>
+                </div>
+                <div class="node n-dest" style="left:790px;top:260px;width:180px">
+                    <div class="icon">🏫</div>
+                    <div class="label">公益事業</div>
+                    <div class="sub">フリースクール・美術館等</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== SCENE 2: 自治体連携型 ===== -->
+        <div class="scene" id="s2">
+            <div class="flow">
+                <svg class="arrows" viewBox="0 0 1060 540">
+                    <defs>
+                        <marker id="ch0" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                            <polygon points="0 0, 8 3, 0 6" fill="#ffaa00" />
+                        </marker>
+                        <marker id="ch1" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                            <polygon points="0 0, 8 3, 0 6" fill="#0096ff" />
+                        </marker>
+                        <marker id="ch2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                            <polygon points="0 0, 8 3, 0 6" fill="#00d4aa" />
+                        </marker>
+                        <marker id="ch3" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                            <polygon points="0 0, 8 3, 0 6" fill="#7c5cfc" />
+                        </marker>
+                    </defs>
+                    <path d="M200,80 Q300,130 380,170" class="arrow-line" stroke="#ffaa00" marker-end="url(#ch0)" />
+                    <path d="M200,260 Q300,230 380,200" class="arrow-line" stroke="#0096ff" marker-end="url(#ch1)" />
+                    <path d="M580,190 Q660,190 700,190" class="arrow-solid" stroke="#00d4aa" marker-end="url(#ch2)" />
+                    <path d="M880,170 Q920,120 940,100" class="arrow-solid" stroke="#7c5cfc" marker-end="url(#ch3)" />
+                    <path d="M880,210 Q920,270 940,300" class="arrow-solid" stroke="#7c5cfc" marker-end="url(#ch3)" />
+                    <path d="M200,430 Q500,390 700,220" class="arrow-line" stroke="#00d4aa" marker-end="url(#ch2)" />
+                </svg>
+                <div class="node n-source" style="left:40px;top:40px;width:180px">
+                    <div class="icon">👤</div>
+                    <div class="label">個人</div>
+                    <div class="sub">ふるさと納税</div>
+                    <div class="badge b-orange">実質負担 2,000円</div>
+                </div>
+                <div class="node n-source" style="left:40px;top:210px;width:180px">
+                    <div class="icon">🏢</div>
+                    <div class="label">企業</div>
+                    <div class="sub">企業版ふるさと納税</div>
+                    <div class="badge b-blue">実質負担 約1割</div>
+                </div>
+                <div class="node n-gov" style="left:350px;top:130px;width:230px">
+                    <div class="icon">🏛️</div>
+                    <div class="label">自治体</div>
+                    <div class="sub">地域再生計画<br>「文化財・祭り保存事業」</div>
+                    <div class="badge b-orange">内閣府認定</div>
+                </div>
+                <div class="node n-hub" style="left:680px;top:140px;width:200px">
+                    <div class="icon">⚡</div>
+                    <div class="label">NPOファンド</div>
+                    <div class="sub">認定NPO法人<br>事業実施主体</div>
+                    <div class="badge b-green">AI監査配分</div>
+                </div>
+                <div class="node n-dest" style="left:920px;top:60px;width:130px">
+                    <div class="icon">🏮</div>
+                    <div class="label">祭り</div>
+                </div>
+                <div class="node n-dest" style="left:920px;top:260px;width:130px">
+                    <div class="icon">🏯</div>
+                    <div class="label">文化財</div>
+                </div>
+                <div class="node n-source" style="left:40px;top:390px;width:180px">
+                    <div class="icon">👤</div>
+                    <div class="label">個人（直接寄附）</div>
+                    <div class="sub">認定NPOへ</div>
+                    <div class="badge b-green">寄附金控除</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#00d4aa"></div>寄附・控除対象の流れ
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#0096ff"></div>法人資金の流れ
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#ffaa00"></div>ふるさと納税/現物の流れ
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#7c5cfc"></div>配分先への資金
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#ff5078"></div>税制還元
+        </div>
+    </div>
+
+    <div class="info-row" id="info0">
+        <div class="info-card">
+            <h3>個人の税制メリット</h3>
+            <p>認定NPO/公益財団への寄附で<span class="highlight">税額控除40%</span> + 住民税最大10%。月1,000円（年12,000円）の寄附なら実質負担は約<span
+                    class="highlight">6,000円</span>程度に。</p>
+        </div>
+        <div class="info-card">
+            <h3>法人の税制メリット</h3>
+            <p>一般寄附金とは<span class="highlight">別枠</span>で損金算入。特別損金算入限度額の範囲内で法人税が軽減される。</p>
+        </div>
+        <div class="info-card">
+            <h3>宗教法人との差</h3>
+            <p>神社への直接寄付は<span class="highlight">控除対象外</span>。NPOファンドを経由することで、同じ祭り支援でも税制優遇が受けられる。</p>
+        </div>
+    </div>
+    <div class="info-row" id="info1" style="display:none">
+        <div class="info-card">
+            <h3>2026年4月の制度革新</h3>
+            <p>NPO法人が<span class="highlight">受託者</span>となれる新公益信託制度。信託財産からの所得は<span class="highlight">非課税</span>。</p>
+        </div>
+        <div class="info-card">
+            <h3>現物寄附の威力</h3>
+            <p>不動産・有価証券の寄附時に<span class="highlight">譲渡所得が非課税</span>（国税庁長官承認）。遊休不動産を祭り復興に活用できる。</p>
+        </div>
+        <div class="info-card">
+            <h3>設計の自由度</h3>
+            <p>新制度は事業運営型も可能。フリースクール、美術館運営など<span class="highlight">幅広い公益活動</span>に活用可。</p>
+        </div>
+    </div>
+    <div class="info-row" id="info2" style="display:none">
+        <div class="info-card">
+            <h3>ふるさと納税ルート</h3>
+            <p>個人は<span class="highlight">実質2,000円</span>の負担で祭り保護に貢献。ワンストップ特例でも利用可能。</p>
+        </div>
+        <div class="info-card">
+            <h3>企業版の破壊力</h3>
+            <p>損金算入30%＋税額控除60%で<span class="highlight">実質負担は約1割</span>。2028年3月まで延長済み。</p>
+        </div>
+        <div class="info-card">
+            <h3>二重ルート戦略</h3>
+            <p>ふるさと納税（自治体経由）と直接寄附（認定NPO）の<span class="highlight">2ルート</span>で資金を最大化。</p>
+        </div>
+    </div>
+
+    <footer>NPOファンド構想 — 税制スキーム資金フロー図 | 2026年2月</footer>
+
+    <script>
+        function showScene(i) {
+            document.querySelectorAll('.scene').forEach((s, j) => { s.classList.toggle('active', j === i) });
+            document.querySelectorAll('.tab').forEach((t, j) => { t.classList.toggle('active', j === i) });
+            document.querySelectorAll('[id^="info"]').forEach((d, j) => { d.style.display = j === i ? 'grid' : 'none' });
+        }
+    </script>
+</body>
+
+</html>

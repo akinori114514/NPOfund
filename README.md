@@ -16,6 +16,7 @@ GitHub Pages で公開中です。
 | **[🌐 ランディングページ](https://akinori114514.github.io/NPOfund/index.html)** | プロジェクトのビジョンと仕組み |
 | **[📊 ピッチスライド](https://akinori114514.github.io/NPOfund/slides.html)** | コンセプト説明用プレゼン（← → キーで操作） |
 | **[📖 思想・構想解説スライド](https://akinori114514.github.io/NPOfund/explainer_slides.html)** | NPOファンドの思想・仕組みを12枚で体系的に解説 |
+| **[💹 税制スキーム×資金フロー図](https://akinori114514.github.io/NPOfund/fund_flow_diagram.html)** | 3つの実装シナリオにおける資金の流れと税制優遇効果 |
 
 ---
 
